@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from viberbot.api.event_type import EventType
-from viberbot.api.viber_requests import ViberDeliveredRequest
-from viberbot.api.viber_requests import create_request
+from aioviberbot.api.event_type import EventType
+from aioviberbot.api.viber_requests import ViberDeliveredRequest
+from aioviberbot.api.viber_requests import create_request
 
 SAMPLE_REQUEST = dict(
 	event=EventType.DELIVERED,

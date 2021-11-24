@@ -1,10 +1,10 @@
 from datetime import datetime
 
-from viberbot.api.event_type import EventType
-from viberbot.api.messages import MessageType
-from viberbot.api.messages import TextMessage
-from viberbot.api.viber_requests import ViberMessageRequest
-from viberbot.api.viber_requests import create_request
+from aioviberbot.api.event_type import EventType
+from aioviberbot.api.messages import MessageType
+from aioviberbot.api.messages import TextMessage
+from aioviberbot.api.viber_requests import ViberMessageRequest
+from aioviberbot.api.viber_requests import create_request
 
 SAMPLE_REQUEST = dict(
 	event=EventType.MESSAGE,

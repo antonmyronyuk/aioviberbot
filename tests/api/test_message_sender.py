@@ -3,10 +3,10 @@ import logging
 
 import pytest
 
-from viberbot.api.bot_configuration import BotConfiguration
-from viberbot.api.consts import BOT_API_ENDPOINT
-from viberbot.api.message_sender import MessageSender
-from viberbot.api.messages import TextMessage
+from aioviberbot.api.bot_configuration import BotConfiguration
+from aioviberbot.api.consts import BOT_API_ENDPOINT
+from aioviberbot.api.message_sender import MessageSender
+from aioviberbot.api.messages import TextMessage
 
 LOGGER = logging.getLogger('.')
 VIBER_BOT_CONFIGURATION = BotConfiguration("auth-token-sample", "testbot", "http://avatars.com/")
