@@ -3,14 +3,14 @@ import json
 
 import pytest
 
-from viberbot.api.messages import ContactMessage
-from viberbot.api.messages import FileMessage
-from viberbot.api.messages import LocationMessage
-from viberbot.api.messages import PictureMessage
-from viberbot.api.messages import TextMessage
-from viberbot.api.messages import URLMessage
-from viberbot.api.messages import VideoMessage
-from viberbot.api.messages import get_message
+from aioviberbot.api.messages import ContactMessage
+from aioviberbot.api.messages import FileMessage
+from aioviberbot.api.messages import LocationMessage
+from aioviberbot.api.messages import PictureMessage
+from aioviberbot.api.messages import TextMessage
+from aioviberbot.api.messages import URLMessage
+from aioviberbot.api.messages import VideoMessage
+from aioviberbot.api.messages import get_message
 
 
 def test_contact_message():

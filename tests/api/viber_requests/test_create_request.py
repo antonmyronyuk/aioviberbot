@@ -1,8 +1,8 @@
 from datetime import datetime
 
 import pytest
-from viberbot.api.messages import MessageType
-from viberbot.api.viber_requests import create_request
+from aioviberbot.api.messages import MessageType
+from aioviberbot.api.viber_requests import create_request
 
 
 def test_create_request_missing_event():

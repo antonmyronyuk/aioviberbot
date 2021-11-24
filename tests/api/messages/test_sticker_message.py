@@ -1,5 +1,5 @@
-from viberbot.api.messages import MessageType
-from viberbot.api.messages import StickerMessage
+from aioviberbot.api.messages import MessageType
+from aioviberbot.api.messages import StickerMessage
 
 SAMPLE_TRACKING_DATA = "some tracking data"
 SAMPLE_KEYBOARD = """{

@@ -1,6 +1,6 @@
-from viberbot.api.messages import ContactMessage
-from viberbot.api.messages import MessageType
-from viberbot.api.messages.data_types.contact import Contact
+from aioviberbot.api.messages import ContactMessage
+from aioviberbot.api.messages import MessageType
+from aioviberbot.api.messages.data_types.contact import Contact
 
 SAMPLE_TRACKING_DATA = "tracking data!"
 SAMPLE_KEYBOARD = """{
