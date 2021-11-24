@@ -1,5 +1,5 @@
-from viberbot import Api, BotConfiguration
-from viberbot.api.messages.text_message import TextMessage
+from aioviberbot import Api, BotConfiguration
+from aioviberbot.api.messages.text_message import TextMessage
 
 TOKEN = '4e2a50206527dd1a-b159133a6c7aa3db-ca8c1524c10d9ee8'
 
@@ -10,8 +10,18 @@ viber = Api(BotConfiguration(
 ))
 
 async def run():
-    print(await viber.get_user_details('wtNpzB6pfOO7vhAf0GGbgA=='))
-    await viber.send_messages('wtNpzB6pfOO7vhAf0GGbgA==', TextMessage(text='test msg'))
+    print('here')
+    print(await viber.get_account_info())
+    try:
+        await viber.get_user_details('wtNpzB6pfOO7vhAf0GGbgA==')
+    except Exception as e:
+        print(e)
 
+    try:
+        await viber.send_messages('wtNpzB6pfOO7vhAf0GGbgA==', TextMessage(text='test msg'))
+    except Exception as e:
+        print(e)
+
+print('here')
 import asyncio
 asyncio.run(run())

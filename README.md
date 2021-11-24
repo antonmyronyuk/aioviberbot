@@ -1,4 +1,8 @@
-# Viber Python Bot API
+# This is async version of viberbot package
+Docs will be available later
+
+
+# ORGINAL README: Viber Python Bot API
 
 Use this library to develop a bot for Viber platform.
 The library is available on **[GitHub](https://github.com/Viber/viber-bot-python)** as well as a package on [PyPI](https://pypi.python.org/pypi/viberbot/).
@@ -58,13 +62,13 @@ Creating a basic Viber bot is simple:
 ### Firstly, let's import and configure our bot
 
 ```python
-from viberbot import Api
-from viberbot.api.bot_configuration import BotConfiguration
+from aioviberbot import Api
+from aioviberbot.api.bot_configuration import BotConfiguration
 
 bot_configuration = BotConfiguration(
-	name='PythonSampleBot',
-	avatar='http://viber.com/avatar.jpg',
-	auth_token='YOUR_AUTH_TOKEN_HERE'
+  name='PythonSampleBot',
+  avatar='http://viber.com/avatar.jpg',
+  auth_token='YOUR_AUTH_TOKEN_HERE'
 )
 viber = Api(bot_configuration)
 ```
@@ -115,13 +119,13 @@ logger.addHandler(handler)
 Well, funny you ask. Yes we do. All the Message types are located in `viberbot.api.messages` package. Here's some examples:
 
 ```python
-from viberbot.api.messages import (
-    TextMessage,
-    ContactMessage,
-    PictureMessage,
-    VideoMessage
+from aioviberbot.api.messages import (
+  TextMessage,
+  ContactMessage,
+  PictureMessage,
+  VideoMessage
 )
-from viberbot.api.messages.data_types.contact import Contact
+from aioviberbot.api.messages.data_types.contact import Contact
 
 # creation of text message
 text_message = TextMessage(text="sample text message!")
@@ -156,54 +160,56 @@ Check out the full API documentation for more advanced uses.
 
 ```python
 from flask import Flask, request, Response
-from viberbot import Api
-from viberbot.api.bot_configuration import BotConfiguration
-from viberbot.api.messages import VideoMessage
-from viberbot.api.messages.text_message import TextMessage
+from aioviberbot import Api
+from aioviberbot.api.bot_configuration import BotConfiguration
+from aioviberbot.api.messages import VideoMessage
+from aioviberbot.api.messages.text_message import TextMessage
 import logging
 
-from viberbot.api.viber_requests import ViberConversationStartedRequest
-from viberbot.api.viber_requests import ViberFailedRequest
-from viberbot.api.viber_requests import ViberMessageRequest
-from viberbot.api.viber_requests import ViberSubscribedRequest
-from viberbot.api.viber_requests import ViberUnsubscribedRequest
+from aioviberbot.api.viber_requests import ViberConversationStartedRequest
+from aioviberbot.api.viber_requests import ViberFailedRequest
+from aioviberbot.api.viber_requests import ViberMessageRequest
+from aioviberbot.api.viber_requests import ViberSubscribedRequest
+from aioviberbot.api.viber_requests import ViberUnsubscribedRequest
 
 app = Flask(__name__)
 viber = Api(BotConfiguration(
-    name='PythonSampleBot',
-    avatar='http://site.com/avatar.jpg',
-    auth_token='445da6az1s345z78-dazcczb2542zv51a-e0vc5fva17480im9'
+  name='PythonSampleBot',
+  avatar='http://site.com/avatar.jpg',
+  auth_token='445da6az1s345z78-dazcczb2542zv51a-e0vc5fva17480im9'
 ))
 
 
 @app.route('/', methods=['POST'])
 def incoming():
-    logger.debug("received request. post data: {0}".format(request.get_data()))
-    # every viber message is signed, you can verify the signature using this method
-    if not viber.verify_signature(request.get_data(), request.headers.get('X-Viber-Content-Signature')):
-        return Response(status=403)
+  logger.debug("received request. post data: {0}".format(request.get_data()))
+  # every viber message is signed, you can verify the signature using this method
+  if not viber.verify_signature(request.get_data(),
+                                request.headers.get('X-Viber-Content-Signature')):
+    return Response(status=403)
 
-    # this library supplies a simple way to receive a request object
-    viber_request = viber.parse_request(request.get_data())
+  # this library supplies a simple way to receive a request object
+  viber_request = viber.parse_request(request.get_data())
 
-    if isinstance(viber_request, ViberMessageRequest):
-        message = viber_request.message
-        # lets echo back
-        viber.send_messages(viber_request.sender.id, [
-            message
-        ])
-    elif isinstance(viber_request, ViberSubscribedRequest):
-        viber.send_messages(viber_request.get_user.id, [
-            TextMessage(text="thanks for subscribing!")
-        ])
-    elif isinstance(viber_request, ViberFailedRequest):
-        logger.warn("client failed receiving message. failure: {0}".format(viber_request))
+  if isinstance(viber_request, ViberMessageRequest):
+    message = viber_request.message
+    # lets echo back
+    viber.send_messages(viber_request.sender.id, [
+      message
+    ])
+  elif isinstance(viber_request, ViberSubscribedRequest):
+    viber.send_messages(viber_request.get_user.id, [
+      TextMessage(text="thanks for subscribing!")
+    ])
+  elif isinstance(viber_request, ViberFailedRequest):
+    logger.warn("client failed receiving message. failure: {0}".format(viber_request))
 
-    return Response(status=200)
+  return Response(status=200)
+
 
 if __name__ == "__main__":
-    context = ('server.crt', 'server.key')
-    app.run(host='0.0.0.0', port=443, debug=True, ssl_context=context)
+  context = ('server.crt', 'server.key')
+  app.run(host='0.0.0.0', port=443, debug=True, ssl_context=context)
 ```
 
 As you can see there's a bunch of `Request` types here's a list of them.
@@ -548,7 +554,7 @@ message = URLMessage(media="http://my.siteurl.com")
 | contact | `Contact` |
 
 ```python
-from viberbot.api.messages.data_types.contact import Contact
+from aioviberbot.api.messages.data_types.contact import Contact
 
 contact = Contact(name="Viber user", phone_number="+0015648979", avatar="http://link.to.avatar")
 contact_message = ContactMessage(contact=contact)
@@ -592,7 +598,7 @@ message = VideoMessage(media="http://site.com/video.mp4", size=21499)
 | location | `Location` |
 
 ```python
-from viberbot.api.messages.data_types.location import Location
+from aioviberbot.api.messages.data_types.location import Location
 
 location = Location(lat=0.0, lon=0.0)
 location_message = LocationMessage(location=location)

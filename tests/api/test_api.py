@@ -2,9 +2,9 @@ import os
 
 import pytest
 
-from viberbot import Api
-from viberbot import BotConfiguration
-from viberbot.api.viber_requests import ViberMessageRequest
+from aioviberbot import Api
+from aioviberbot import BotConfiguration
+from aioviberbot.api.viber_requests import ViberMessageRequest
 
 VIBER_BOT_CONFIGURATION = BotConfiguration("44dafb7e0f40021e-61a47a1e6778d187-f2c5a676a07050b3", "testbot", "http://avatars.com/")
 
