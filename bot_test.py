@@ -13,12 +13,12 @@ async def run():
     print('here')
     print(await viber.get_account_info())
     try:
-        await viber.get_user_details('wtNpzB6pfOO7vhAf0GGbgA==')
+        print(await viber.get_user_details('wtNpzB6pfOO7vhAf0GGbgA=='))
     except Exception as e:
         print(e)
 
     try:
-        await viber.send_messages('wtNpzB6pfOO7vhAf0GGbgA==', TextMessage(text='test msg'))
+        await viber.send_messages('wtNpzB6pfOO7vhAf0GGbgA==', TextMessage(text='test msg 2'))
     except Exception as e:
         print(e)
 
