@@ -1,7 +1,13 @@
+import pathlib
 import setuptools
 from importlib.machinery import SourceFileLoader
 
 version = SourceFileLoader('version', 'aioviberbot/version.py').load_module()
+
+
+def readfile(filename) -> str:
+    return pathlib.Path(filename).read_text('utf-8').strip()
+
 
 setuptools.setup(
     name='aioviberbot',
@@ -14,6 +20,8 @@ setuptools.setup(
     author='Anton Myronyuk',
     author_email='antonmyronyuk@gmail.com',
     description='Viber Python Bot Async API',
+    long_description=readfile('README.md'),
+    long_description_content_type='text/markdown',
     license='Apache',
     classifiers=[
         'Development Status :: 3 - Alpha',
