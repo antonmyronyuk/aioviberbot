@@ -1,30 +1,27 @@
-# This is async version of viberbot package
-Docs will be available later
+# Viber Python Bot Async API
 
-
-# ORGINAL README: Viber Python Bot API
-
+This is async version of [viberbot](https://github.com/Viber/viber-bot-python) package. Fully compatible with sync package version.
 Use this library to develop a bot for Viber platform.
-The library is available on **[GitHub](https://github.com/Viber/viber-bot-python)** as well as a package on [PyPI](https://pypi.python.org/pypi/viberbot/).
+
+The library is available on [GitHub](https://github.com/antonmyronyuk/aioviberbot) as well as a package on [PyPI](https://pypi.org/project/aioviberbot/).
 
 This package can be imported using pip by adding the following to your `requirements.txt`:
 
 ```python
-viberbot==1.0.11
+aioviberbot==0.0.1a3
 ```
 
 ## License
 
-This library is released under the terms of the Apache 2.0 license. See [License](https://github.com/Viber/viber-bot-python/blob/master/LICENSE.md) for more information.
+This library is released under the terms of the Apache 2.0 license. See [License](https://github.com/antonmyronyuk/aioviberbot/blob/main/LICENSE.md) for more information.
 
 ## Library Prerequisites
 
-1. python >= 2.7.0
+1. python >= 3.6.0
 1. An Active Viber account on a platform which supports Public Accounts/ bots (iOS/Android). This account will automatically be set as the account administrator during the account creation process.
 1. Active Public Account/ bot - Create an account [here](https://developers.viber.com/docs/general/get-started).
 1. Account authentication token - unique account identifier used to validate your account in all API requests. Once your account is created your authentication token will appear in the account’s “edit info” screen (for admins only). Each request posted to Viber by the account will need to contain the token.
 1. Webhook - Please use a server endpoint URL that supports HTTPS. If you deploy on your own custom server, you'll need a trusted (ca.pem) certificate, not self-signed. Read our [blog post](https://developers.viber.com/blog/2017/05/24/test-your-bots-locally) on how to test your bot locally.
-
 
 ## Contributing
 
@@ -40,7 +37,7 @@ We are using pytest, so if you want to run the tests from the commandline just f
 python setup.py develop
 
 # run the unit tests
-python -m pytest
+pytest tests/
 ``` 
 
 ## Let's get started!
@@ -50,8 +47,8 @@ python -m pytest
 
 Creating a basic Viber bot is simple:
 
-1. Install the library with pip `pip install viberbot`
-2. Import `viberbot.api` library to your project
+1. Install the library with pip `pip install aioviberbot`
+2. Import `aioviberbot.api` library to your project
 3. Create a Public Account or bot and use the API key from [https://developers.viber.com](https://developers.viber.com)
 4. Configure your bot as described in the documentation below
 5. Start your web server
@@ -79,18 +76,19 @@ Next thing you should do is starting a https server.
 and yes, as we said in the prerequisites it has to be https server. Create a server however you like, for example with `Flask`:
 
 ```python
-from flask import Flask, request, Response
+from aiohttp import web
 
-app = Flask(__name__)
+async def webhook(request: web.Request) -> web.Response:
+    request_data = await request.read()
+    logger.debug('Received request. Post data: %s', request_data)
+    # handle the request here
+    return web.json_response({'ok': True})
 
-@app.route('/incoming', methods=['POST'])
-def incoming():
-	logger.debug("received request. post data: {0}".format(request.get_data()))
-	# handle the request here
-	return Response(status=200)
 
-context = ('server.crt', 'server.key')
-app.run(host='0.0.0.0', port=443, debug=True, ssl_context=context)
+if __name__ == '__main__':
+    app = web.Application()
+    app.router.add_route('POST', '/webhook', webhook),
+    web.run_app(app)
 ```
 
 ### Setting a webhook
@@ -99,7 +97,7 @@ After the server is up and running you can set a webhook.
 Viber will push messages sent to this URL. web server should be internet-facing.
 
 ```python
-viber.set_webhook('https://mybotwebserver.com:443/')
+await viber.set_webhook('https://mybotwebserver.com:443/')
 ```
 
 ### Logging
@@ -107,7 +105,7 @@ viber.set_webhook('https://mybotwebserver.com:443/')
 This library uses the standard python logger. If you want to see its logs you can configure the logger:
 
 ```python
-logger = logging.getLogger()
+logger = logging.getLogger('aioviberbot')
 logger.setLevel(logging.DEBUG)
 handler = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -116,7 +114,7 @@ logger.addHandler(handler)
 ```
 
 ### Do you supply a basic types of messages?
-Well, funny you ask. Yes we do. All the Message types are located in `viberbot.api.messages` package. Here's some examples:
+Well, funny you ask. Yes we do. All the Message types are located in `aioviberbot.api.messages` package. Here's some examples:
 
 ```python
 from aioviberbot.api.messages import (
@@ -128,20 +126,20 @@ from aioviberbot.api.messages import (
 from aioviberbot.api.messages.data_types.contact import Contact
 
 # creation of text message
-text_message = TextMessage(text="sample text message!")
+text_message = TextMessage(text='sample text message!')
 
 # creation of contact message
-contact = Contact(name="Viber user", phone_number="0123456789")
+contact = Contact(name='Viber user', phone_number='0123456789')
 contact_message = ContactMessage(contact=contact)
 
 # creation of picture message
-picture_message = PictureMessage(text="Check this", media="http://site.com/img.jpg")
+picture_message = PictureMessage(text='Check this', media='http://site.com/img.jpg')
 
 # creation of video message
-video_message = VideoMessage(media="http://mediaserver.com/video.mp4", size=4324)
+video_message = VideoMessage(media='http://mediaserver.com/video.mp4', size=4324)
 ```
 
-Have you noticed how we created the `TextMessage`? There's a all bunch of message types you should get familiar with.
+Have you noticed how we created the `TextMessage`? There's all bunch of message types you should get familiar with.
 
 * [Text Message](#TextMessage)
 * [Url Message](#UrlMessage)
@@ -159,57 +157,58 @@ Check out the full API documentation for more advanced uses.
 ### Let's add it all up and reply with a message!
 
 ```python
-from flask import Flask, request, Response
+from aiohttp import web
+
 from aioviberbot import Api
 from aioviberbot.api.bot_configuration import BotConfiguration
-from aioviberbot.api.messages import VideoMessage
 from aioviberbot.api.messages.text_message import TextMessage
-import logging
-
 from aioviberbot.api.viber_requests import ViberConversationStartedRequest
-from aioviberbot.api.viber_requests import ViberFailedRequest
 from aioviberbot.api.viber_requests import ViberMessageRequest
 from aioviberbot.api.viber_requests import ViberSubscribedRequest
-from aioviberbot.api.viber_requests import ViberUnsubscribedRequest
 
-app = Flask(__name__)
 viber = Api(BotConfiguration(
-  name='PythonSampleBot',
-  avatar='http://site.com/avatar.jpg',
-  auth_token='445da6az1s345z78-dazcczb2542zv51a-e0vc5fva17480im9'
+    name='PythonSampleBot',
+    avatar='http://viber.com/avatar.jpg',
+    auth_token='YOUR_AUTH_TOKEN_HERE'
 ))
 
 
-@app.route('/', methods=['POST'])
-def incoming():
-  logger.debug("received request. post data: {0}".format(request.get_data()))
-  # every viber message is signed, you can verify the signature using this method
-  if not viber.verify_signature(request.get_data(),
-                                request.headers.get('X-Viber-Content-Signature')):
-    return Response(status=403)
+async def webhook(request: web.Request) -> web.Response:
+    request_data = await request.read()
+    signature = request.headers.get('X-Viber-Content-Signature')
+    if not viber.verify_signature(request_data, signature):
+        raise web.HTTPForbidden
 
-  # this library supplies a simple way to receive a request object
-  viber_request = viber.parse_request(request.get_data())
+    viber_request = viber.parse_request(request_data)
+    if isinstance(viber_request, ViberMessageRequest):
+        # echo message
+        await viber.send_messages(
+            viber_request.sender.id,
+            [viber_request.message],
+        )
+    elif isinstance(viber_request, ViberSubscribedRequest):
+        await viber.send_messages(
+            viber_request.user.id,
+            [TextMessage(text='Thanks for subscribing!')],
+        )
+    elif isinstance(viber_request, ViberConversationStartedRequest):
+        await viber.send_messages(
+            viber_request.user.id,
+            [TextMessage(text='Thanks for starting conversation!')],
+        )
 
-  if isinstance(viber_request, ViberMessageRequest):
-    message = viber_request.message
-    # lets echo back
-    viber.send_messages(viber_request.sender.id, [
-      message
-    ])
-  elif isinstance(viber_request, ViberSubscribedRequest):
-    viber.send_messages(viber_request.get_user.id, [
-      TextMessage(text="thanks for subscribing!")
-    ])
-  elif isinstance(viber_request, ViberFailedRequest):
-    logger.warn("client failed receiving message. failure: {0}".format(viber_request))
-
-  return Response(status=200)
+    return web.json_response({'ok': True})
 
 
-if __name__ == "__main__":
-  context = ('server.crt', 'server.key')
-  app.run(host='0.0.0.0', port=443, debug=True, ssl_context=context)
+async def set_webhook_signal(app: web.Application):
+    await viber.set_webhook('https://mybotwebserver.com/webhhok')
+
+
+if __name__ == '__main__':
+    app = web.Application()
+    app.on_startup.append(set_webhook_signal)
+    app.router.add_route('POST', '/webhook', webhook),
+    web.run_app(app)
 ```
 
 As you can see there's a bunch of `Request` types here's a list of them.
@@ -252,7 +251,7 @@ As you can see there's a bunch of `Request` types here's a list of them.
 Returns `List of registered event_types`. 
 
 ```python
-event_types = viber.set_webhook('https://example.com/incoming')
+event_types = await viber.set_webhook('https://example.com/incoming')
 ```
 
 <a name="unset_webhook"></a>
@@ -262,7 +261,7 @@ event_types = viber.set_webhook('https://example.com/incoming')
 Returns `None`. 
 
 ```python
-viber.unset_webhook()
+await viber.unset_webhook()
 ```
 
 <a name="get_account_info"></a>
@@ -272,7 +271,7 @@ viber.unset_webhook()
 Returns an `object` [with the following JSON](https://developers.viber.com/docs/api/rest-bot-api/#get-account-info). 
 
 ```python
-account_info = viber.get_account_info()
+account_info = await viber.get_account_info()
 ```
 
 <a name="verify_signature"></a>
@@ -288,8 +287,8 @@ account_info = viber.get_account_info()
 Returns a `boolean` suggesting if the signature is valid. 
 
 ```python
-if not viber.verify_signature(request.get_data(), request.headers.get('X-Viber-Content-Signature')):
-	return Response(status=403)
+if not viber.verify_signature(await request.read(), request.headers.get('X-Viber-Content-Signature')):
+	raise web.HTTPForbidden
 ```
 
 <a name="parse_request"></a>
@@ -305,7 +304,7 @@ Returns a `ViberRequest` object.
 There's a list of [ViberRequest objects](#ViberRequest)
 
 ```python
-viber_request = viber.parse_request(request.get_data())
+viber_request = viber.parse_request(await request.read())
 ```
 
 <a name="send_messages"></a>
@@ -320,8 +319,10 @@ viber_request = viber.parse_request(request.get_data())
 Returns `list` of message tokens of the messages sent. 
 
 ```python
-tokens = viber.send_messages(to=viber_request.get_sender().get_id(),
-			     messages=[TextMessage(text="sample message")])
+tokens = await viber.send_messages(
+    to=viber_request.sender.id,
+    messages=[TextMessage(text='sample message')],
+)
 ```
 
 <a name="post_to_pa"></a>
@@ -336,8 +337,10 @@ tokens = viber.send_messages(to=viber_request.get_sender().get_id(),
 Returns `list` of message tokens of the messages sent. 
 
 ```python
-tokens = viber.post_messages_to_public_account(sender=viber_request.get_sender().get_id(),
-			     messages=[TextMessage(text="sample message")])
+tokens = await viber.post_messages_to_public_account(
+    sender=viber_request.sender.id,
+    messages=[TextMessage(text='sample message')],
+)
 ```
 
 <a name="get_online"></a>
@@ -699,16 +702,17 @@ Sending a welcome message will be done according to the following flow:
 The welcome message will be a JSON constructed according to the send_message requests structure, but without the `receiver` parameter. An example welcome message would look like this:
 
 ```python
-@app.route('/', methods=['POST'])
-def incoming():
-	viber_request = viber.parse_request(request.get_data())
+async def webhook(request: web.Request) -> web.Response:
+    request_data = await request.read()
+    viber_request = viber.parse_request(request_data)
 
-	if isinstance(viber_request, ViberConversationStartedRequest) :
-		viber.send_messages(viber_request.get_user().get_id(), [
-			TextMessage(text="Welcome!")
-		])
+    if isinstance(viber_request, ViberConversationStartedRequest):
+        await viber.send_messages(
+            viber_request.user.id,
+            [TextMessage(text='Welcome!')],
+        )
 
-	return Response(status=200)
+    return web.json_response({'ok': True})
 ```
 
 ## Community

@@ -118,3 +118,4 @@ ENV/
 
 .DS_Store
 .idea/
+bot_test.py
