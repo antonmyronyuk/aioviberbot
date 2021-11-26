@@ -1,4 +1,4 @@
-class EventType(object):
+class EventType:
     SEEN = 'seen'
     CONVERSATION_STARTED = 'conversation_started'
     DELIVERED = 'delivered'

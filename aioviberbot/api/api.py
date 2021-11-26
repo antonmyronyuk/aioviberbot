@@ -9,9 +9,9 @@ from aioviberbot.api.api_request_sender import ApiRequestSender
 from aioviberbot.api.message_sender import MessageSender
 
 
-class Api(object):
+class Api:
     def __init__(self, bot_configuration):
-        self._logger = logging.getLogger('viber.bot.api')
+        self._logger = logging.getLogger('aioviberbot')
         self._bot_configuration = bot_configuration
         self._request_sender = ApiRequestSender(self._logger, VIBER_BOT_API_URL, bot_configuration, VIBER_BOT_USER_AGENT)
         self._message_sender = MessageSender(self._logger, self._request_sender)
@@ -25,11 +25,11 @@ class Api(object):
         return self._bot_configuration.avatar
 
     async def set_webhook(self, url, webhook_events=None, is_inline=False):
-        self._logger.debug(u"setting webhook to url: {0}".format(url))
+        self._logger.debug('setting webhook to url: {0}'.format(url))
         return await self._request_sender.set_webhook(url, webhook_events, is_inline)
 
     async def unset_webhook(self):
-        self._logger.debug("unsetting webhook")
+        self._logger.debug('unsetting webhook')
         return await self._request_sender.set_webhook('')
 
     async def get_online(self, ids):
@@ -39,20 +39,20 @@ class Api(object):
         return await self._request_sender.get_user_details(user_id)
 
     async def get_account_info(self):
-        self._logger.debug("requesting account info")
+        self._logger.debug('requesting account info')
         account_info = await self._request_sender.get_account_info()
-        self._logger.debug(u"received account info: {0}".format(account_info))
+        self._logger.debug('received account info: {0}'.format(account_info))
         return account_info
 
     def verify_signature(self, request_data, signature):
         return signature == self._calculate_message_signature(request_data)
 
     def parse_request(self, request_data):
-        self._logger.debug("parsing request")
+        self._logger.debug('parsing request')
         request_dict = json.loads(request_data.decode() if isinstance(
             request_data, bytes) else request_data)
         request = create_request(request_dict)
-        self._logger.debug(u"parsed request={0}".format(request))
+        self._logger.debug('parsed request={0}'.format(request))
         return request
 
     async def send_messages(self, to, messages, chat_id=None):
@@ -62,7 +62,7 @@ class Api(object):
         :param chat_id: Optional. String. Indicates that this is a message sent in inline conversation.
         :return: list of tokens of the sent messages
         """
-        self._logger.debug("going to send messages: {0}, to: {1}".format(messages, to))
+        self._logger.debug('going to send messages: {0}, to: {1}'.format(messages, to))
         if not isinstance(messages, list):
             messages = [messages]
 
@@ -89,8 +89,5 @@ class Api(object):
         return sent_messages_tokens
 
     def _calculate_message_signature(self, message):
-        return hmac.new(
-            bytes(self._bot_configuration.auth_token.encode('ascii')),
-            msg=message,
-            digestmod=hashlib.sha256) \
-            .hexdigest()
+        key = bytes(self._bot_configuration.auth_token.encode('ascii'))
+        return hmac.new(key, message, hashlib.sha256).hexdigest()

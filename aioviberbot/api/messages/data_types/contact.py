@@ -1,6 +1,4 @@
-
-
-class Contact(object):
+class Contact:
     def __init__(self, name=None, phone_number=None, avatar=None):
         self._name = name
         self._phone_number = phone_number
@@ -34,4 +32,4 @@ class Contact(object):
         return self._name == other.name and self._phone_number == other.phone_number
 
     def __str__(self):
-        return u"Contact[name={0}, phone_number={1}, avatar={2}]".format(self._name, self._phone_number, self._avatar)
+        return 'Contact[name={0}, phone_number={1}, avatar={2}]'.format(self._name, self._phone_number, self._avatar)

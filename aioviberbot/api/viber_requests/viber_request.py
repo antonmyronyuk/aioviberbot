@@ -1,6 +1,6 @@
 
 
-class ViberRequest(object):
+class ViberRequest:
     def __init__(self, event_type=None):
         self._event_type = event_type
         self._timestamp = None
@@ -20,4 +20,4 @@ class ViberRequest(object):
         return self._timestamp
 
     def __str__(self):
-        return u"event_type={0}, timestamp={1}".format(self._event_type, self._timestamp)
+        return 'event_type={0}, timestamp={1}'.format(self._event_type, self._timestamp)

@@ -184,7 +184,7 @@ def test_unknown_type():
 
 
 def test_get_text_message_unicode():
-    text_message_data = u"""
+    text_message_data = """
     {
     "auth_token": "4453b6ac1s345678-e02c5f12174805f9-daec9cbb5448c51r",
     "receiver": "01234567890A=",

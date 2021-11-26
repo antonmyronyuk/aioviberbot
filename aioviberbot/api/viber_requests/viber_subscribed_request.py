@@ -25,5 +25,5 @@ class ViberSubscribedRequest(ViberRequest):
         return self._api_version
 
     def __str__(self):
-        return u"ViberSubscribedRequest [{0}, user={1}]" \
+        return 'ViberSubscribedRequest [{0}, user={1}]' \
             .format(super(ViberSubscribedRequest, self).__str__(), self._user)

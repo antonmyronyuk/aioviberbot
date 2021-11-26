@@ -16,4 +16,4 @@ class KeyboardMessage(Message):
         return self._keyboard is not None
 
     def __str__(self):
-        return u"KeyboardMessage [{0}]".format(super(KeyboardMessage, self).__str__())
+        return 'KeyboardMessage [{0}]'.format(super(KeyboardMessage, self).__str__())
