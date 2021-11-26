@@ -9,27 +9,27 @@ from aioviberbot.api.viber_requests.viber_subscribed_request import ViberSubscri
 from aioviberbot.api.viber_requests.viber_unsubscribed_request import ViberUnsubscribedRequest
 
 EVENT_TYPE_TO_CLASS = {
-	EventType.MESSAGE: ViberMessageRequest,
-	EventType.FAILED: ViberFailedRequest,
-	EventType.CONVERSATION_STARTED: ViberConversationStartedRequest,
-	EventType.DELIVERED: ViberDeliveredRequest,
-	EventType.SEEN: ViberSeenRequest,
-	EventType.SUBSCRIBED: ViberSubscribedRequest,
-	EventType.UNSUBSCRIBED: ViberUnsubscribedRequest,
-	EventType.WEBHOOK: ViberRequest
+    EventType.MESSAGE: ViberMessageRequest,
+    EventType.FAILED: ViberFailedRequest,
+    EventType.CONVERSATION_STARTED: ViberConversationStartedRequest,
+    EventType.DELIVERED: ViberDeliveredRequest,
+    EventType.SEEN: ViberSeenRequest,
+    EventType.SUBSCRIBED: ViberSubscribedRequest,
+    EventType.UNSUBSCRIBED: ViberUnsubscribedRequest,
+    EventType.WEBHOOK: ViberRequest
 }
 
 
 def create_request(request_dict):
-	if 'event' not in request_dict:
-		raise Exception("request is missing field 'event'")
+    if 'event' not in request_dict:
+        raise Exception("request is missing field 'event'")
 
-	if request_dict['event'] not in EVENT_TYPE_TO_CLASS:
-		raise Exception("event type '{0}' is not supported".format(request_dict['event']))
+    if request_dict['event'] not in EVENT_TYPE_TO_CLASS:
+        raise Exception("event type '{0}' is not supported".format(request_dict['event']))
 
-	return EVENT_TYPE_TO_CLASS[request_dict['event']]().from_dict(request_dict)
+    return EVENT_TYPE_TO_CLASS[request_dict['event']]().from_dict(request_dict)
 
 
 __all__ = [
-	'ViberConversationStartedRequest', 'ViberDeliveredRequest', 'ViberFailedRequest', 'ViberMessageRequest',
-	'ViberSeenRequest', 'ViberSubscribedRequest', 'ViberUnsubscribedRequest']
+    'ViberConversationStartedRequest', 'ViberDeliveredRequest', 'ViberFailedRequest', 'ViberMessageRequest',
+    'ViberSeenRequest', 'ViberSubscribedRequest', 'ViberUnsubscribedRequest']
