@@ -289,7 +289,7 @@ Returns a `boolean` suggesting if the signature is valid.
 
 ```python
 if not viber.verify_signature(await request.read(), request.headers.get('X-Viber-Content-Signature')):
-	raise web.HTTPForbidden
+    raise web.HTTPForbidden
 ```
 
 <a name="parse_request"></a>
