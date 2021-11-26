@@ -7,148 +7,163 @@ from aioviberbot.api.api_request_sender import ApiRequestSender
 from aioviberbot.api.bot_configuration import BotConfiguration
 from aioviberbot.api.consts import BOT_API_ENDPOINT, VIBER_BOT_USER_AGENT
 from aioviberbot.api.event_type import EventType
+from .stubs import ResponseStub
+
+logger = logging.getLogger('super-logger')
+VIBER_BOT_API_URL = 'http://site.com'
+VIBER_BOT_CONFIGURATION = BotConfiguration(
+    auth_token='auth-token-sample',
+    name='testbot',
+    avatar='https://avatars.com/avatar.jpg',
+)
 
 
-class Stub(object): pass
+async def test_set_webhook_sanity():
+    webhook_events = [EventType.DELIVERED, EventType.UNSUBSCRIBED, EventType.SEEN]
+    url = 'http://sample.url.com'
+
+    async def post_request(endpoint, payload):
+        assert endpoint == BOT_API_ENDPOINT.SET_WEBHOOK
+        assert payload['event_types'] == webhook_events
+        assert payload['url'] == url
+        return dict(status=0, event_types=webhook_events)
+
+    request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
+    request_sender.post_request = post_request
+
+    response = await request_sender.set_webhook(url=url, webhook_events=webhook_events)
+    assert response == webhook_events
 
 
-def stub(*args): pass
+async def test_set_webhook_failure():
+    webhook_events = [EventType.DELIVERED, EventType.UNSUBSCRIBED, EventType.SEEN]
+    url = 'http://sample.url.com'
+
+    async def post_request(endpoint, payload):
+        raise Exception('failed with status: 1, message: failed')
+
+    request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
+    request_sender.post_request = post_request
+    with pytest.raises(Exception) as exc_info:
+        await request_sender.set_webhook(url=url, webhook_events=webhook_events)
+
+    assert str(exc_info.value) == 'failed with status: 1, message: failed'
 
 
-VIBER_BOT_API_URL = "http://site.com"
-VIBER_BOT_CONFIGURATION = BotConfiguration("auth-token-sample", "testbot", "http://avatars.com/")
+async def test_post_request_success(monkeypatch):
+    account_id = 'pa:12345'
+
+    async def callback(session, url, json, headers, *args, **kwargs):
+        assert url == VIBER_BOT_API_URL + '/' + BOT_API_ENDPOINT.GET_ACCOUNT_INFO
+        assert json['auth_token'] == VIBER_BOT_CONFIGURATION.auth_token
+        assert headers['User-Agent'] == VIBER_BOT_USER_AGENT
+        return ResponseStub({
+            'status': 0,
+            'status_message': 'ok',
+            'id': account_id,
+        })
+
+    monkeypatch.setattr('aiohttp.ClientSession.post', callback)
+    request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
+
+    response = await request_sender.get_account_info()
+    assert response['id'] == account_id
 
 
-def test_set_webhook_sanity():
-	webhook_events = [EventType.DELIVERED, EventType.UNSUBSCRIBED, EventType.SEEN]
-	url = "http://sample.url.com"
+async def test_post_request_json_exception(monkeypatch):
+    async def json_decode_error_mock():
+        return json.loads('not a json')
 
-	def post_request(endpoint, payload):
-		request = json.loads(payload)
-		assert endpoint == BOT_API_ENDPOINT.SET_WEBHOOK
-		assert request['auth_token'] == VIBER_BOT_CONFIGURATION.auth_token
-		assert request['event_types'] == webhook_events
-		assert request['url'] == url
-		return dict(status=0, event_types=webhook_events)
+    async def callback(session, url, json, headers, *args, **kwargs):
+        assert url == VIBER_BOT_API_URL + '/' + BOT_API_ENDPOINT.GET_ACCOUNT_INFO
+        assert json['auth_token'] == VIBER_BOT_CONFIGURATION.auth_token
+        assert headers['User-Agent'] == VIBER_BOT_USER_AGENT
+        response = ResponseStub({})
+        response.json = json_decode_error_mock
+        return response
 
-	request_sender = ApiRequestSender(logging.getLogger(), VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
-	request_sender.post_request = post_request
+    monkeypatch.setattr('aiohttp.ClientSession.post', callback)
+    request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
 
-	request_sender.set_webhook(url=url, webhook_events=webhook_events)
+    with pytest.raises(Exception) as exc_info:
+        await request_sender.get_account_info()
 
-
-def test_set_webhook_failure():
-	webhook_events = [EventType.DELIVERED, EventType.UNSUBSCRIBED, EventType.SEEN]
-	url = "http://sample.url.com"
-
-	def post_request(endpoint, payload):
-		return dict(status=1, status_message="failed")
-
-	request_sender = ApiRequestSender(logging.getLogger(), VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
-	request_sender.post_request = post_request
-	with pytest.raises(Exception) as exc:
-		request_sender.set_webhook(url=url, webhook_events=webhook_events)
-
-		assert exc.value.message.startswith("failed with status: 1, message: failed")
+    assert issubclass(exc_info.type, json.JSONDecodeError)
 
 
-def test_post_request_success(monkeypatch):
-	def callback(endpoint, data, headers):
-		request = json.loads(data)
-		assert endpoint == VIBER_BOT_API_URL + "/" + BOT_API_ENDPOINT.GET_ACCOUNT_INFO
-		assert request['auth_token'] == VIBER_BOT_CONFIGURATION.auth_token
-		assert headers['User-Agent'] == VIBER_BOT_USER_AGENT
-		response = Stub()
-		response.raise_for_status = stub
-		response.text = "{}"
+async def test_get_online_status_fail(monkeypatch):
+    user_ids = ['0123456789=']
 
-		return response
+    async def callback(session, url, json, headers, *args, **kwargs):
+        assert url == VIBER_BOT_API_URL + '/' + BOT_API_ENDPOINT.GET_ONLINE
+        assert json['auth_token'] == VIBER_BOT_CONFIGURATION.auth_token
+        assert json['ids'] == user_ids
+        assert headers['User-Agent'] == VIBER_BOT_USER_AGENT
+        return ResponseStub({
+            'status': 1,
+            'status_message': 'failed',
+        })
 
-	monkeypatch.setattr("requests.post", callback)
+    monkeypatch.setattr('aiohttp.ClientSession.post', callback)
+    request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
 
-	request_sender = ApiRequestSender(logging.getLogger(), VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
-	request_sender.get_account_info()
+    with pytest.raises(Exception) as exc_info:
+        await request_sender.get_online_status(ids=user_ids)
 
-
-def test_post_request_json_exception(monkeypatch):
-	def callback(endpoint, data, headers):
-		request = json.loads(data)
-		assert endpoint == VIBER_BOT_API_URL + "/" + BOT_API_ENDPOINT.GET_ACCOUNT_INFO
-		assert request['auth_token'] == VIBER_BOT_CONFIGURATION.auth_token
-		assert headers['User-Agent'] == VIBER_BOT_USER_AGENT
-		response = Stub()
-		response.raise_for_status = stub
-		response.text = "not a json{/"
-
-		return response
-
-	monkeypatch.setattr("requests.post", callback)
-	request_sender = ApiRequestSender(logging.getLogger(), VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
-
-	with pytest.raises(Exception) as exc:
-		request_sender.get_account_info()
+    assert str(exc_info.value) == 'failed with status: 1, message: failed'
 
 
-def test_get_online_status_fail(monkeypatch):
-	def callback(endpoint, data, headers):
-		request = json.loads(data)
-		assert endpoint == VIBER_BOT_API_URL + "/" + BOT_API_ENDPOINT.GET_ONLINE
-		assert request['auth_token'] == VIBER_BOT_CONFIGURATION.auth_token
-		assert headers['User-Agent'] == VIBER_BOT_USER_AGENT
-		response = Stub()
-		response.raise_for_status = stub
-		response.text = "{\"status\": 1, \"status_message\": \"fail\"}"
+async def test_get_online_missing_ids(monkeypatch):
+    async def callback(session, url, json, headers, *args, **kwargs):
+        pytest.fail('request sender not supposed to call post_request')
 
-		return response
+    monkeypatch.setattr('aiohttp.ClientSession.post', callback)
+    request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
 
-	monkeypatch.setattr("requests.post", callback)
-	request_sender = ApiRequestSender(logging.getLogger(), VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
+    with pytest.raises(Exception) as exc_info:
+        await request_sender.get_online_status(ids=None)
 
-	with pytest.raises(Exception) as exc:
-		request_sender.get_online_status(ids=["0123456789="])
-
-		assert exc.value.message.startswith("failed with status:")
+    assert str(exc_info.value) == 'missing parameter ids, should be a list of viber memberIds'
 
 
-def test_get_online_missing_ids(monkeypatch):
-	monkeypatch.setattr("requests.post", stub)
-	request_sender = ApiRequestSender(logging.getLogger(), VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
+async def test_get_online_success(monkeypatch):
+    user_ids = ['03249305A=']
 
-	with pytest.raises(Exception) as exc:
-		request_sender.get_online_status(ids=None)
+    async def callback(session, url, json, headers, *args, **kwargs):
+        assert url == VIBER_BOT_API_URL + '/' + BOT_API_ENDPOINT.GET_ONLINE
+        assert json['auth_token'] == VIBER_BOT_CONFIGURATION.auth_token
+        assert json['ids'] == user_ids
+        assert headers['User-Agent'] == VIBER_BOT_USER_AGENT
+        return ResponseStub({
+            'status': 0,
+            'status_message': 'ok',
+            'users': [],
+        })
 
-		assert exc.value.message.startswith("missing parameter ids, should be a list of viber memberIds")
+    monkeypatch.setattr('aiohttp.ClientSession.post', callback)
+    request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
 
-
-def test_get_online_success(monkeypatch):
-	def callback(endpoint, data, headers):
-		request = json.loads(data)
-		assert endpoint == VIBER_BOT_API_URL + "/" + BOT_API_ENDPOINT.GET_ONLINE
-		assert request['auth_token'] == VIBER_BOT_CONFIGURATION.auth_token
-		response = Stub()
-		response.raise_for_status = stub
-		response.text = "{\"status\": 0, \"status_message\": \"OK\", \"users\": []}"
-
-		return response
-
-	monkeypatch.setattr("requests.post", callback)
-	request_sender = ApiRequestSender(logging.getLogger(), VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
-
-	request_sender.get_online_status(ids=["03249305A="])
+    response = await request_sender.get_online_status(ids=user_ids)
+    assert response == []
 
 
-def test_get_user_details_success(monkeypatch):
-	def callback(endpoint, data, headers):
-		request = json.loads(data)
-		assert endpoint == VIBER_BOT_API_URL + "/" + BOT_API_ENDPOINT.GET_USER_DETAILS
-		assert request['auth_token'] == VIBER_BOT_CONFIGURATION.auth_token
-		response = Stub()
-		response.raise_for_status = stub
-		response.text = "{\"status\": 0, \"status_message\": \"OK\", \"user\": {}}"
+async def test_get_user_details_success(monkeypatch):
+    user_id = '03249305A='
+    user_info = {'id': user_id, 'name': 'Some Name'}
 
-		return response
+    async def callback(session, url, json, headers, *args, **kwargs):
+        assert url == VIBER_BOT_API_URL + '/' + BOT_API_ENDPOINT.GET_USER_DETAILS
+        assert json['auth_token'] == VIBER_BOT_CONFIGURATION.auth_token
+        assert json['id'] == user_id
+        assert headers['User-Agent'] == VIBER_BOT_USER_AGENT
+        return ResponseStub({
+            'status': 0,
+            'status_message': 'ok',
+            'user': user_info,
+        })
 
-	monkeypatch.setattr("requests.post", callback)
-	request_sender = ApiRequestSender(logging.getLogger(), VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
+    monkeypatch.setattr('aiohttp.ClientSession.post', callback)
+    request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
 
-	request_sender.get_user_details(user_id="03249305A=")
+    response = await request_sender.get_user_details(user_id=user_id)
+    assert response == user_info

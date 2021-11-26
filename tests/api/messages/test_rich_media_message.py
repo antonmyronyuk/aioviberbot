@@ -52,68 +52,68 @@ SAMPLE_ALT_TEXT = "upgrade now!"
 
 
 def test_creation():
-	text_message = RichMediaMessage(
-		tracking_data=SAMPLE_TRACKING_DATA,
-		keyboard=SAMPLE_KEYBOARD,
-		rich_media=SAMPLE_RICH_MEDIA,
-		alt_text=SAMPLE_ALT_TEXT
-	)
+    text_message = RichMediaMessage(
+        tracking_data=SAMPLE_TRACKING_DATA,
+        keyboard=SAMPLE_KEYBOARD,
+        rich_media=SAMPLE_RICH_MEDIA,
+        alt_text=SAMPLE_ALT_TEXT
+    )
 
-	assert text_message.tracking_data == SAMPLE_TRACKING_DATA
-	assert text_message.keyboard == SAMPLE_KEYBOARD
-	assert text_message.rich_media == SAMPLE_RICH_MEDIA
-	assert text_message.alt_text == SAMPLE_ALT_TEXT
+    assert text_message.tracking_data == SAMPLE_TRACKING_DATA
+    assert text_message.keyboard == SAMPLE_KEYBOARD
+    assert text_message.rich_media == SAMPLE_RICH_MEDIA
+    assert text_message.alt_text == SAMPLE_ALT_TEXT
 
 
 def test_to_dict():
-	message_dict = dict(
-		type=MessageType.RICH_MEDIA,
-		tracking_data=SAMPLE_TRACKING_DATA,
-		keyboard=SAMPLE_KEYBOARD,
-		rich_media=SAMPLE_RICH_MEDIA,
-		alt_text=SAMPLE_ALT_TEXT
-	)
+    message_dict = dict(
+        type=MessageType.RICH_MEDIA,
+        tracking_data=SAMPLE_TRACKING_DATA,
+        keyboard=SAMPLE_KEYBOARD,
+        rich_media=SAMPLE_RICH_MEDIA,
+        alt_text=SAMPLE_ALT_TEXT
+    )
 
-	rich_media_message_dict = RichMediaMessage(
-		tracking_data=SAMPLE_TRACKING_DATA,
-		keyboard=SAMPLE_KEYBOARD,
-		rich_media=SAMPLE_RICH_MEDIA,
-		alt_text=SAMPLE_ALT_TEXT
-	).to_dict()
+    rich_media_message_dict = RichMediaMessage(
+        tracking_data=SAMPLE_TRACKING_DATA,
+        keyboard=SAMPLE_KEYBOARD,
+        rich_media=SAMPLE_RICH_MEDIA,
+        alt_text=SAMPLE_ALT_TEXT
+    ).to_dict()
 
-	assert message_dict == rich_media_message_dict
+    assert message_dict == rich_media_message_dict
 
 
 def test_from_dict():
-	message_dict = dict(
-		tracking_data=SAMPLE_TRACKING_DATA,
-		keyboard=SAMPLE_KEYBOARD,
-		rich_media=SAMPLE_RICH_MEDIA,
-		alt_text=SAMPLE_ALT_TEXT
-	)
+    message_dict = dict(
+        tracking_data=SAMPLE_TRACKING_DATA,
+        keyboard=SAMPLE_KEYBOARD,
+        rich_media=SAMPLE_RICH_MEDIA,
+        alt_text=SAMPLE_ALT_TEXT
+    )
 
-	text_message = RichMediaMessage().from_dict(message_dict)
+    text_message = RichMediaMessage().from_dict(message_dict)
 
-	assert text_message.tracking_data == SAMPLE_TRACKING_DATA
-	assert text_message.keyboard == SAMPLE_KEYBOARD
-	assert text_message.rich_media == SAMPLE_RICH_MEDIA
-	assert text_message.alt_text == SAMPLE_ALT_TEXT
+    assert text_message.tracking_data == SAMPLE_TRACKING_DATA
+    assert text_message.keyboard == SAMPLE_KEYBOARD
+    assert text_message.rich_media == SAMPLE_RICH_MEDIA
+    assert text_message.alt_text == SAMPLE_ALT_TEXT
 
 
 def test_validate_success():
-	text_message = RichMediaMessage(
-		tracking_data=SAMPLE_TRACKING_DATA,
-		keyboard=SAMPLE_KEYBOARD,
-		rich_media=SAMPLE_RICH_MEDIA
-	)
+    text_message = RichMediaMessage(
+        tracking_data=SAMPLE_TRACKING_DATA,
+        keyboard=SAMPLE_KEYBOARD,
+        rich_media=SAMPLE_RICH_MEDIA
+    )
 
-	assert text_message.validate()
+    assert text_message.validate()
 
 
 def test_validate_failure():
-	text_message = RichMediaMessage(
-		tracking_data=SAMPLE_TRACKING_DATA,
-		keyboard=SAMPLE_KEYBOARD
-	)
+    text_message = RichMediaMessage(
+        tracking_data=SAMPLE_TRACKING_DATA,
+        keyboard=SAMPLE_KEYBOARD
+    )
 
-	assert not text_message.validate()
+    assert not text_message.validate()

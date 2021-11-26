@@ -33,98 +33,98 @@ SAMPLE_TEXT = "see my video!"
 
 
 def test_creation():
-	video_message = VideoMessage(
-		tracking_data=SAMPLE_TRACKING_DATA,
-		keyboard=SAMPLE_KEYBOARD,
-		media=SAMPLE_MEDIA,
-		thumbnail=SAMPLE_THUMBNAIL,
-		size=SAMPLE_SIZE,
-		duration=SAMPLE_DURATION,
-		text=SAMPLE_TEXT
-	)
+    video_message = VideoMessage(
+        tracking_data=SAMPLE_TRACKING_DATA,
+        keyboard=SAMPLE_KEYBOARD,
+        media=SAMPLE_MEDIA,
+        thumbnail=SAMPLE_THUMBNAIL,
+        size=SAMPLE_SIZE,
+        duration=SAMPLE_DURATION,
+        text=SAMPLE_TEXT
+    )
 
-	assert video_message.tracking_data == SAMPLE_TRACKING_DATA
-	assert video_message.keyboard == SAMPLE_KEYBOARD
-	assert video_message.media == SAMPLE_MEDIA
-	assert video_message.size == SAMPLE_SIZE
-	assert video_message.thumbnail == SAMPLE_THUMBNAIL
-	assert video_message.duration == SAMPLE_DURATION
-	assert video_message.text == SAMPLE_TEXT
+    assert video_message.tracking_data == SAMPLE_TRACKING_DATA
+    assert video_message.keyboard == SAMPLE_KEYBOARD
+    assert video_message.media == SAMPLE_MEDIA
+    assert video_message.size == SAMPLE_SIZE
+    assert video_message.thumbnail == SAMPLE_THUMBNAIL
+    assert video_message.duration == SAMPLE_DURATION
+    assert video_message.text == SAMPLE_TEXT
 
 
 def test_from_dict():
-	message_dict = dict(
-		tracking_data=SAMPLE_TRACKING_DATA,
-		keyboard=SAMPLE_KEYBOARD,
-		media=SAMPLE_MEDIA,
-		thumbnail=SAMPLE_THUMBNAIL,
-		size=SAMPLE_SIZE,
-		duration=SAMPLE_DURATION,
-		text=SAMPLE_TEXT
-	)
+    message_dict = dict(
+        tracking_data=SAMPLE_TRACKING_DATA,
+        keyboard=SAMPLE_KEYBOARD,
+        media=SAMPLE_MEDIA,
+        thumbnail=SAMPLE_THUMBNAIL,
+        size=SAMPLE_SIZE,
+        duration=SAMPLE_DURATION,
+        text=SAMPLE_TEXT
+    )
 
-	video_message = VideoMessage().from_dict(message_dict)
+    video_message = VideoMessage().from_dict(message_dict)
 
-	assert video_message.tracking_data == SAMPLE_TRACKING_DATA
-	assert video_message.keyboard == SAMPLE_KEYBOARD
-	assert video_message.media == SAMPLE_MEDIA
-	assert video_message.size == SAMPLE_SIZE
-	assert video_message.thumbnail == SAMPLE_THUMBNAIL
-	assert video_message.duration == SAMPLE_DURATION
-	assert video_message.text == SAMPLE_TEXT
+    assert video_message.tracking_data == SAMPLE_TRACKING_DATA
+    assert video_message.keyboard == SAMPLE_KEYBOARD
+    assert video_message.media == SAMPLE_MEDIA
+    assert video_message.size == SAMPLE_SIZE
+    assert video_message.thumbnail == SAMPLE_THUMBNAIL
+    assert video_message.duration == SAMPLE_DURATION
+    assert video_message.text == SAMPLE_TEXT
 
 
 def test_to_dict():
-	message_dict = dict(
-		type=MessageType.VIDEO,
-		tracking_data=SAMPLE_TRACKING_DATA,
-		keyboard=SAMPLE_KEYBOARD,
-		media=SAMPLE_MEDIA,
-		thumbnail=SAMPLE_THUMBNAIL,
-		size=SAMPLE_SIZE,
-		duration=SAMPLE_DURATION,
-		text=SAMPLE_TEXT
-	)
+    message_dict = dict(
+        type=MessageType.VIDEO,
+        tracking_data=SAMPLE_TRACKING_DATA,
+        keyboard=SAMPLE_KEYBOARD,
+        media=SAMPLE_MEDIA,
+        thumbnail=SAMPLE_THUMBNAIL,
+        size=SAMPLE_SIZE,
+        duration=SAMPLE_DURATION,
+        text=SAMPLE_TEXT
+    )
 
-	video_message_dict = VideoMessage(
-		tracking_data=SAMPLE_TRACKING_DATA,
-		keyboard=SAMPLE_KEYBOARD,
-		media=SAMPLE_MEDIA,
-		thumbnail=SAMPLE_THUMBNAIL,
-		size=SAMPLE_SIZE,
-		duration=SAMPLE_DURATION,
-		text=SAMPLE_TEXT
-	).to_dict()
+    video_message_dict = VideoMessage(
+        tracking_data=SAMPLE_TRACKING_DATA,
+        keyboard=SAMPLE_KEYBOARD,
+        media=SAMPLE_MEDIA,
+        thumbnail=SAMPLE_THUMBNAIL,
+        size=SAMPLE_SIZE,
+        duration=SAMPLE_DURATION,
+        text=SAMPLE_TEXT
+    ).to_dict()
 
-	assert message_dict == video_message_dict
+    assert message_dict == video_message_dict
 
 
 def test_validate_success():
-	video_message = VideoMessage(
-		media=SAMPLE_MEDIA,
-		size=SAMPLE_SIZE
-	)
+    video_message = VideoMessage(
+        media=SAMPLE_MEDIA,
+        size=SAMPLE_SIZE
+    )
 
-	assert video_message.validate()
+    assert video_message.validate()
 
 
 def test_validate_failure():
-	video_message = VideoMessage(
-		tracking_data=SAMPLE_TRACKING_DATA,
-		keyboard=SAMPLE_KEYBOARD,
-		thumbnail=SAMPLE_THUMBNAIL,
-		size=SAMPLE_SIZE,
-		duration=SAMPLE_DURATION
-	)
+    video_message = VideoMessage(
+        tracking_data=SAMPLE_TRACKING_DATA,
+        keyboard=SAMPLE_KEYBOARD,
+        thumbnail=SAMPLE_THUMBNAIL,
+        size=SAMPLE_SIZE,
+        duration=SAMPLE_DURATION
+    )
 
-	assert not video_message.validate()
+    assert not video_message.validate()
 
-	video_message = VideoMessage(
-		tracking_data=SAMPLE_TRACKING_DATA,
-		keyboard=SAMPLE_KEYBOARD,
-		media=SAMPLE_MEDIA,
-		thumbnail=SAMPLE_THUMBNAIL,
-		duration=SAMPLE_DURATION
-	)
+    video_message = VideoMessage(
+        tracking_data=SAMPLE_TRACKING_DATA,
+        keyboard=SAMPLE_KEYBOARD,
+        media=SAMPLE_MEDIA,
+        thumbnail=SAMPLE_THUMBNAIL,
+        duration=SAMPLE_DURATION
+    )
 
-	assert not video_message.validate()
+    assert not video_message.validate()
