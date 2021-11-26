@@ -63,9 +63,9 @@ from aioviberbot import Api
 from aioviberbot.api.bot_configuration import BotConfiguration
 
 bot_configuration = BotConfiguration(
-  name='PythonSampleBot',
-  avatar='http://viber.com/avatar.jpg',
-  auth_token='YOUR_AUTH_TOKEN_HERE'
+    name='PythonSampleBot',
+    avatar='http://viber.com/avatar.jpg',
+    auth_token='YOUR_AUTH_TOKEN_HERE',
 )
 viber = Api(bot_configuration)
 ```
@@ -119,10 +119,10 @@ Well, funny you ask. Yes we do. All the Message types are located in `aioviberbo
 
 ```python
 from aioviberbot.api.messages import (
-  TextMessage,
-  ContactMessage,
-  PictureMessage,
-  VideoMessage
+    TextMessage,
+    ContactMessage,
+    PictureMessage,
+    VideoMessage,
 )
 from aioviberbot.api.messages.data_types.contact import Contact
 
