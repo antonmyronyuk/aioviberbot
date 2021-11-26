@@ -8,7 +8,7 @@ The library is available on [GitHub](https://github.com/antonmyronyuk/aioviberbo
 This package can be imported using pip by adding the following to your `requirements.txt`:
 
 ```python
-aioviberbot==0.0.1a3
+aioviberbot==0.1.1
 ```
 
 ## License
@@ -77,6 +77,7 @@ and yes, as we said in the prerequisites it has to be https server. Create a ser
 
 ```python
 from aiohttp import web
+
 
 async def webhook(request: web.Request) -> web.Response:
     request_data = await request.read()
