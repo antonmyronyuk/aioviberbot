@@ -35,7 +35,7 @@ class RichMediaMessage(TypedMessage):
         return self._alt_text
 
     def __str__(self):
-        return u"RichMediaMessage [{0}, rich_media={1}]"\
+        return 'RichMediaMessage [{0}, rich_media={1}]'\
             .format(
                 super(RichMediaMessage, self).__str__(),
                 self._rich_media,

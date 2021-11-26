@@ -1,6 +1,4 @@
-
-
-class UserProfile(object):
+class UserProfile:
     def __init__(self, name=None, avatar=None, user_id=None, country=None, language=None, api_version=None):
         self._name = name
         self._avatar = avatar
@@ -49,11 +47,14 @@ class UserProfile(object):
         return self
 
     def __str__(self):
-        return u"UserProfile[name={0}, avatar={1}, id={2}, country={3}, language={4}, api_version={5}"\
+        return (
+            'UserProfile[name={0}, avatar={1}, id={2}, country={3}, language={4}, api_version={5}'
             .format(
-            self._name,
-            self._avatar,
-            self._id,
-            self._country,
-            self._language,
-            self._api_version)
+                self._name,
+                self._avatar,
+                self._id,
+                self._country,
+                self._language,
+                self._api_version,
+            )
+        )

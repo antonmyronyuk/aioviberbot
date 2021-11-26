@@ -1,4 +1,4 @@
-class BotConfiguration(object):
+class BotConfiguration:
     def __init__(self, auth_token, name, avatar):
         self._auth_token = auth_token
         self._name = name

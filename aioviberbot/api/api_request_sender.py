@@ -13,7 +13,7 @@ class ApiRequestSender:
         self._bot_configuration = bot_configuration
         self._user_agent = viber_bot_user_agent
 
-    async def post_request(self, endpoint, payload = None):
+    async def post_request(self, endpoint, payload=None):
         url = self._viber_bot_api_url + '/' + endpoint
         payload = payload or {}
         payload['auth_token'] = self._bot_configuration.auth_token
@@ -31,13 +31,13 @@ class ApiRequestSender:
             except (aiohttp.ClientError, asyncio.TimeoutError):
                 self._logger.error(
                     'failed to post request to endpoint={0}, with payload={1}. error is: {2}'
-                        .format(endpoint, payload, traceback.format_exc())
+                    .format(endpoint, payload, traceback.format_exc()),
                 )
                 raise
             except Exception:
                 self._logger.error(
                     'unexpected Exception while trying to post request. error is: {0}'
-                        .format(traceback.format_exc())
+                    .format(traceback.format_exc()),
                 )
                 raise
             else:
@@ -46,13 +46,13 @@ class ApiRequestSender:
 
                 raise Exception(
                     'failed with status: {0}, message: {1}'
-                        .format(result['status'], result['status_message']),
-                        )
+                    .format(result['status'], result.get('status_message')),
+                )
 
     async def set_webhook(self, url, webhook_events=None, is_inline=False):
         payload = {
             'url': url,
-            'is_inline': is_inline
+            'is_inline': is_inline,
         }
 
         if webhook_events is not None:
@@ -69,9 +69,9 @@ class ApiRequestSender:
     async def get_account_info(self):
         return await self.post_request(BOT_API_ENDPOINT.GET_ACCOUNT_INFO)
 
-    async def get_online_status(self, ids=[]):
+    async def get_online_status(self, ids):
         if ids is None or not isinstance(ids, list) or len(ids) == 0:
-            raise Exception(u"missing parameter ids, should be a list of viber memberIds")
+            raise Exception('missing parameter ids, should be a list of viber memberIds')
 
         payload = {
             'ids': ids,

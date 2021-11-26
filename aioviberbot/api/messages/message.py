@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 
-class Message(object):
+class Message:
     def __init__(self, tracking_data=None, keyboard=None, min_api_version=None, alt_text=None):
         self._tracking_data = tracking_data
         self._keyboard = keyboard
@@ -51,7 +51,7 @@ class Message(object):
         pass
 
     def __str__(self):
-        return u"tracking_data={0}, keyboard={1}, min_api_version={2}"\
+        return 'tracking_data={0}, keyboard={1}, min_api_version={2}'\
             .format(
                 self._tracking_data,
                 self._keyboard,

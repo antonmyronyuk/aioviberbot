@@ -29,7 +29,7 @@ class LocationMessage(TypedMessage):
                 and self._location and self._location.validate()
 
     def __str__(self):
-        return u"LocationMessage [{0}, contact={1}]"\
+        return 'LocationMessage [{0}, contact={1}]'\
             .format(
                 super(LocationMessage, self).__str__(),
                 self._location)

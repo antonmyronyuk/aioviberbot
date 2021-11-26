@@ -149,7 +149,12 @@ async def test_get_online_success(monkeypatch):
 
 async def test_get_user_details_success(monkeypatch):
     user_id = '03249305A='
-    user_info = {'id': user_id, 'name': 'Some Name'}
+    user_info = {
+        'id': user_id,
+        'name': 'Some Name',
+        'avatar': 'https://avatar.com/user-avatar.png',
+        'language': 'uk',
+    }
 
     async def callback(session, url, json, headers, *args, **kwargs):
         assert url == VIBER_BOT_API_URL + '/' + BOT_API_ENDPOINT.GET_USER_DETAILS

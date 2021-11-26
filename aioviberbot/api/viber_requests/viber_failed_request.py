@@ -35,7 +35,7 @@ class ViberFailedRequest(ViberRequest):
         return self._desc
 
     def __str__(self):
-        return u"ViberFailedRequest [{0}, message_token={1}, user_id={2}, desc={3}]" \
+        return 'ViberFailedRequest [{0}, message_token={1}, user_id={2}, desc={3}]' \
             .format(
                 super(ViberFailedRequest, self).__str__(),
                 self._message_token,
