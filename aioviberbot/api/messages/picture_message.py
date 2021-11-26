@@ -43,7 +43,7 @@ class PictureMessage(TypedMessage):
         return self._thumbnail
 
     def __str__(self):
-        return u"PictureMessage [{0}, text={1}, media={2}, thumbnail={3}]"\
+        return 'PictureMessage [{0}, text={1}, media={2}, thumbnail={3}]'\
             .format(
                 super(PictureMessage, self).__str__(),
                 self._text,

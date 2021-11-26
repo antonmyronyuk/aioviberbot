@@ -28,8 +28,8 @@ def test_verify_signature_failure():
 def test_parse_request_not_json():
     viber = Api(VIBER_BOT_CONFIGURATION)
 
-    with pytest.raises(ValueError) as exc:
-        viber.parse_request("dsfdfdsf\#")
+    with pytest.raises(ValueError):
+        viber.parse_request('bad json')
 
 
 def test_parse_request_unicode():

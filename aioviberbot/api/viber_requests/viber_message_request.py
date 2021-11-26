@@ -49,8 +49,8 @@ class ViberMessageRequest(ViberRequest):
         return self._silent
 
     def __str__(self):
-        return u"ViberMessageRequest [{0}, message_token={1}, sender={2}, " \
-            u"message={3}, chat_id={4}, reply_type={5}, silent={6}]" \
+        return 'ViberMessageRequest [{0}, message_token={1}, sender={2},' \
+            'message={3}, chat_id={4}, reply_type={5}, silent={6}]' \
             .format(
                 super(ViberMessageRequest, self).__str__(),
                 self._message_token,

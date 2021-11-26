@@ -1,13 +1,11 @@
-
-
-class LocationConsts(object):
+class LocationConsts:
     MAX_LONGITUDE = 180
     MIN_LONGITUDE = -180
     MAX_LATITUDE = 90
     MIN_LATITUDE = -90
 
 
-class Location(object):
+class Location:
     def __init__(self, lat=None, lon=None):
         self._lat = lat
         self._lon = lon
@@ -46,4 +44,4 @@ class Location(object):
         return self._lat == other.latitude and self._lon == other.longitude
 
     def __str__(self):
-        return u"Location[lat={0}, lon={1}]".format(self._lat, self._lon)
+        return 'Location[lat={0}, lon={1}]'.format(self._lat, self._lon)

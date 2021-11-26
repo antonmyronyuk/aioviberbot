@@ -17,5 +17,5 @@ class ViberUnsubscribedRequest(ViberRequest):
         return self._user_id
 
     def __str__(self):
-        return u"ViberUnsubscribedRequest [{0}, user_id={1}]" \
+        return 'ViberUnsubscribedRequest [{0}, user_id={1}]' \
             .format(super(ViberUnsubscribedRequest, self).__str__(), self._user_id)

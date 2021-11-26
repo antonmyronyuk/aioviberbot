@@ -51,7 +51,7 @@ class ViberConversationStartedRequest(ViberRequest):
         return self._subscribed
 
     def __str__(self):
-        return u"ViberConversationStartedRequest [{0}, message_token={1}, type={2}, context{3}, user={4} subscribed={5}]"\
+        return 'ViberConversationStartedRequest [{0}, message_token={1}, type={2}, context{3}, user={4} subscribed={5}]'\
             .format(
                 super(ViberConversationStartedRequest, self).__str__(),
                 self._message_token,

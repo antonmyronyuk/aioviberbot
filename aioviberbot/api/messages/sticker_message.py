@@ -27,4 +27,4 @@ class StickerMessage(TypedMessage):
                 and self._sticker_id is not None
 
     def __str__(self):
-        return u"StickerMessage [{0}, sticker_id={1}]".format(super(StickerMessage, self).__str__(), self._sticker_id)
+        return 'StickerMessage [{0}, sticker_id={1}]'.format(super(StickerMessage, self).__str__(), self._sticker_id)

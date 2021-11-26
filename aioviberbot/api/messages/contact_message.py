@@ -31,7 +31,7 @@ class ContactMessage(TypedMessage):
                 and self._contact.phone_number is not None
 
     def __str__(self):
-        return u"ContactMessage [{0}, contact={1}]". \
+        return 'ContactMessage [{0}, contact={1}]'. \
             format(
                 super(ContactMessage, self).__str__(),
                 self._contact)

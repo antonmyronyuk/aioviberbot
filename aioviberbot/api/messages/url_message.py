@@ -27,4 +27,4 @@ class URLMessage(TypedMessage):
                 and self._media is not None
 
     def __str__(self):
-        return u"URLMessage [{0}, media={1}]".format(super(URLMessage, self).__str__(), self._media)
+        return 'URLMessage [{0}, media={1}]'.format(super(URLMessage, self).__str__(), self._media)

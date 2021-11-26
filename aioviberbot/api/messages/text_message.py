@@ -27,4 +27,4 @@ class TextMessage(TypedMessage):
         return self._text
 
     def __str__(self):
-        return u"TextMessage [{0}, text={1}]".format(super(TextMessage, self).__str__(), self._text)
+        return 'TextMessage [{0}, text={1}]'.format(super(TextMessage, self).__str__(), self._text)

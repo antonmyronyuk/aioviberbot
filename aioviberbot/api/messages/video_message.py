@@ -60,7 +60,7 @@ class VideoMessage(TypedMessage):
         return self._text
 
     def __str__(self):
-        return u"VideoMessage [{0}, media={1}, thumbnail={2}, size={3}, duration={4} text={5}]".\
+        return 'VideoMessage [{0}, media={1}, thumbnail={2}, size={3}, duration={4} text={5}]'.\
             format(
                 super(VideoMessage, self).__str__(),
                 self._media,

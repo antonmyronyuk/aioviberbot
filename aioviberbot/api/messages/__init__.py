@@ -29,7 +29,7 @@ def get_message(message_dict):
         raise Exception("message data doesn't contain a type")
 
     if message_dict['type'] not in MESSAGE_TYPE_TO_CLASS:
-        raise Exception(u"message type '{0}' is not supported".format(message_dict['type']))
+        raise Exception("message type '{0}' is not supported".format(message_dict['type']))
 
     return MESSAGE_TYPE_TO_CLASS[message_dict['type']]().from_dict(message_dict)
 
@@ -37,4 +37,5 @@ def get_message(message_dict):
 __all__ = [
     'TextMessage', 'ContactMessage', 'FileMessage', 'LocationMessage',
     'PictureMessage', 'StickerMessage', 'URLMessage', 'VideoMessage',
-    'RichMediaMessage', 'MessageType', 'KeyboardMessage']
+    'RichMediaMessage', 'MessageType', 'KeyboardMessage', 'get_message',
+]

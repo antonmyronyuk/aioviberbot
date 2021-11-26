@@ -1,4 +1,4 @@
-class MessageType(object):
+class MessageType:
     RICH_MEDIA = 'rich_media'
     STICKER = 'sticker'
     URL = 'url'

@@ -29,7 +29,7 @@ class ViberDeliveredRequest(ViberRequest):
         return self._chat_id
 
     def __str__(self):
-        return u"ViberDeliveredRequest [{0}, message_token={1}, user_id={2}]" \
+        return 'ViberDeliveredRequest [{0}, message_token={1}, user_id={2}]' \
             .format(
                 super(ViberDeliveredRequest, self).__str__(),
                 self._message_token,

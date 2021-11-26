@@ -45,7 +45,7 @@ class FileMessage(TypedMessage):
                 and self._file_name is not None
 
     def __str__(self):
-        return u"FileMessage [{0}, media={1}, size={2}, file_name={3}]". \
+        return 'FileMessage [{0}, media={1}, size={2}, file_name={3}]'. \
             format(
                 super(FileMessage, self).__str__(),
                 self._media,
