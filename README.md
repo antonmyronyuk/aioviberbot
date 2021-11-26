@@ -73,7 +73,7 @@ viber = Api(bot_configuration)
 ### Create an HTTPS server
 
 Next thing you should do is starting a https server.
-and yes, as we said in the prerequisites it has to be https server. Create a server however you like, for example with `Flask`:
+and yes, as we said in the prerequisites it has to be https server. Create a server however you like, for example with `aiohttp`:
 
 ```python
 from aiohttp import web
