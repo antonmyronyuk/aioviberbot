@@ -19,7 +19,7 @@ This library is released under the terms of the Apache 2.0 license. See [License
 
 1. python >= 3.6.0
 1. An Active Viber account on a platform which supports Public Accounts/ bots (iOS/Android). This account will automatically be set as the account administrator during the account creation process.
-1. Active Public Account/ bot - Create an account [here](https://developers.viber.com/docs/general/get-started).
+1. Active Public Account/bot - Create an account [here](https://partners.viber.com/account/create-bot-account).
 1. Account authentication token - unique account identifier used to validate your account in all API requests. Once your account is created your authentication token will appear in the account’s “edit info” screen (for admins only). Each request posted to Viber by the account will need to contain the token.
 1. Webhook - Please use a server endpoint URL that supports HTTPS. If you deploy on your own custom server, you'll need a trusted (ca.pem) certificate, not self-signed. Read our [blog post](https://developers.viber.com/blog/2017/05/24/test-your-bots-locally) on how to test your bot locally.
 
@@ -252,7 +252,7 @@ As you can see there's a bunch of `Request` types here's a list of them.
 Returns `List of registered event_types`. 
 
 ```python
-event_types = await viber.set_webhook('https://example.com/incoming')
+event_types = await viber.set_webhook('https://example.com/webhook')
 ```
 
 <a name="unset_webhook"></a>
@@ -355,7 +355,7 @@ tokens = await viber.post_messages_to_public_account(
 Returns a `dictionary of users`.
 
 ```python
-users = Api.get_online(["user1id", "user2id"])
+users = await viber.get_online(['user1id', 'user2id'])
 ```
 
 <a name="get_user_details"></a>
@@ -369,7 +369,7 @@ users = Api.get_online(["user1id", "user2id"])
 The `get_user_details` function will fetch the details of a specific Viber user based on his unique user ID. The user ID can be obtained from the callbacks sent to the account regarding user's actions. This request can be sent twice during a 12 hours period for each user ID.
 
 ```python
-user_data = Api.get_user_details("userId")
+user_data = await viber.get_user_details('userId')
 ```
 
 <a name="ViberRequest"></a>
@@ -534,7 +534,7 @@ Inherits from [ViberRequest](#ViberRequest)
 | text | `string` |
 
 ```python
-message = TextMessage(text="my text message")
+message = TextMessage(text='my text message')
 ```
 
 <a name="UrlMessage"></a>
@@ -546,7 +546,7 @@ message = TextMessage(text="my text message")
 | media | `string` | URL string |
 
 ```python
-message = URLMessage(media="http://my.siteurl.com")
+message = URLMessage(media='http://my.siteurl.com')
 ```
 
 <a name="ContactMessage"></a>
@@ -560,7 +560,7 @@ message = URLMessage(media="http://my.siteurl.com")
 ```python
 from aioviberbot.api.messages.data_types.contact import Contact
 
-contact = Contact(name="Viber user", phone_number="+0015648979", avatar="http://link.to.avatar")
+contact = Contact(name='Viber user', phone_number='+0015648979', avatar='http://link.to.avatar')
 contact_message = ContactMessage(contact=contact)
 ```
 
@@ -575,7 +575,7 @@ contact_message = ContactMessage(contact=contact)
 | thumbnail | `string` |  |
 
 ```python
-message = PictureMessage(media="http://www.thehindubusinessline.com/multimedia/dynamic/01458/viber_logo_JPG_1458024f.jpg", text="Viber logo")
+message = PictureMessage(media='http://www.thehindubusinessline.com/multimedia/dynamic/01458/viber_logo_JPG_1458024f.jpg', text='Viber logo')
 ```
 
 <a name="VideoMessage"></a>
@@ -590,7 +590,7 @@ message = PictureMessage(media="http://www.thehindubusinessline.com/multimedia/d
 | duration | `int` |  |
 
 ```python
-message = VideoMessage(media="http://site.com/video.mp4", size=21499)
+message = VideoMessage(media='http://site.com/video.mp4', size=21499)
 ```
 
 <a name="LocationMessage"></a>
@@ -631,7 +631,7 @@ message = StickerMessage(sticker_id=40100)
 | file\_name | `string` |
 
 ```python
-message = FileMessage(media=url, size=sizeInBytes, file_name=file_name)
+message = FileMessage(media=url, size=size_in_bytes, file_name=file_name)
 ```
 
 <a name="RichMediaMessage"></a>
@@ -666,7 +666,7 @@ SAMPLE_RICH_MEDIA = """{
   ]
 }"""
 
-SAMPLE_ALT_TEXT = "upgrade now!"
+SAMPLE_ALT_TEXT = 'upgrade now!'
 
 message = RichMediaMessage(rich_media=SAMPLE_RICH_MEDIA, alt_text=SAMPLE_ALT_TEXT)
 ```
