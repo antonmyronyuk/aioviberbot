@@ -218,7 +218,7 @@ As you can see there's a bunch of `Request` types here's a list of them.
 
 ### Api class
 
-`from viberbot import Api`
+`from aioviberbot import Api`
 
 * Api
     * [init(bot\_configuration)](#new-Api())
