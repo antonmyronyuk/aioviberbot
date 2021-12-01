@@ -1,9 +1,9 @@
 import json
 import logging
-from unittest import mock
 
 import aiohttp
 import pytest
+from asynctest.mock import patch
 
 from aioviberbot.api.api_request_sender import ApiRequestSender
 from aioviberbot.api.bot_configuration import BotConfiguration
@@ -75,7 +75,7 @@ async def test_post_request_success_exsisting_client_session(monkeypatch):
         client_session=client_session,
     )
 
-    with mock.patch('aiohttp.ClientSession.close') as close_session_mock:
+    with patch('aiohttp.ClientSession.close') as close_session_mock:
         response = await request_sender.get_account_info()
         assert response['id'] == account_id
         close_session_mock.assert_not_called()
@@ -97,10 +97,10 @@ async def test_post_request_success(monkeypatch):
     monkeypatch.setattr('aiohttp.ClientSession.post', callback)
     request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
 
-    with mock.patch('aiohttp.ClientSession.close') as close_session_mock:
+    with patch('aiohttp.ClientSession.close') as close_session_mock:
         response = await request_sender.get_account_info()
         assert response['id'] == account_id
-        close_session_mock.assert_awaited_once()
+        close_session_mock.assert_called_once()
 
 
 async def test_post_request_json_exception(monkeypatch):
