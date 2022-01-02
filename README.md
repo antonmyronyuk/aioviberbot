@@ -221,7 +221,7 @@ As you can see there's a bunch of `Request` types here's a list of them.
 `from aioviberbot import Api`
 
 * Api
-    * [init(bot\_configuration)](#new-Api())
+    * [init(bot\_configuration, client\_session)](#new-Api())
     * [.set\_webhook(url, webhook_events)](#set_webhook) ⇒ `List of registered event_types`
     * [.unset\_webhook()](#unset_webhook) ⇒ `None`
     * [.get\_account_info()](#get_account_info) ⇒ `object`
@@ -236,9 +236,10 @@ As you can see there's a bunch of `Request` types here's a list of them.
 
 ### New Api()
 
-| Param | Type | Description |
-| --- | --- | --- |
-| bot\_configuration | `object` | `BotConfiguration` |
+| Param              | Type     | Description                                                                                 |
+|--------------------|----------|---------------------------------------------------------------------------------------------|
+| bot\_configuration | `object` | `BotConfiguration`                                                                          |
+| client\_session    | `object` | Optional `aiohttp.ClientSession`, pass if you want to use your own session for api requests |
 
 <a name="set_webhook"></a>
 
