@@ -1,7 +1,9 @@
 import json
 import logging
 
+import aiohttp
 import pytest
+from asynctest.mock import patch
 
 from aioviberbot.api.api_request_sender import ApiRequestSender
 from aioviberbot.api.bot_configuration import BotConfiguration
@@ -50,6 +52,35 @@ async def test_set_webhook_failure():
     assert str(exc_info.value) == 'failed with status: 1, message: failed'
 
 
+async def test_post_request_success_exsisting_client_session(monkeypatch):
+    account_id = 'pa:54321'
+    client_session = aiohttp.ClientSession()
+
+    async def callback(session, url, json, headers, *args, **kwargs):
+        assert url == VIBER_BOT_API_URL + '/' + BOT_API_ENDPOINT.GET_ACCOUNT_INFO
+        assert json['auth_token'] == VIBER_BOT_CONFIGURATION.auth_token
+        assert headers['User-Agent'] == VIBER_BOT_USER_AGENT
+        return ResponseStub({
+            'status': 0,
+            'status_message': 'ok',
+            'id': account_id,
+        })
+
+    monkeypatch.setattr('aiohttp.ClientSession.post', callback)
+    request_sender = ApiRequestSender(
+        logger=logger,
+        viber_bot_api_url=VIBER_BOT_API_URL,
+        bot_configuration=VIBER_BOT_CONFIGURATION,
+        viber_bot_user_agent=VIBER_BOT_USER_AGENT,
+        client_session=client_session,
+    )
+
+    with patch('aiohttp.ClientSession.close') as close_session_mock:
+        response = await request_sender.get_account_info()
+        assert response['id'] == account_id
+        close_session_mock.assert_not_called()
+
+
 async def test_post_request_success(monkeypatch):
     account_id = 'pa:12345'
 
@@ -66,8 +97,10 @@ async def test_post_request_success(monkeypatch):
     monkeypatch.setattr('aiohttp.ClientSession.post', callback)
     request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
 
-    response = await request_sender.get_account_info()
-    assert response['id'] == account_id
+    with patch('aiohttp.ClientSession.close') as close_session_mock:
+        response = await request_sender.get_account_info()
+        assert response['id'] == account_id
+        close_session_mock.assert_called_once()
 
 
 async def test_post_request_json_exception(monkeypatch):
