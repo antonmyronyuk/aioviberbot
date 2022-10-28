@@ -17,7 +17,7 @@ This library is released under the terms of the Apache 2.0 license. See [License
 
 ## Library Prerequisites
 
-1. python >= 3.6.0
+1. python >= 3.7.0
 1. An Active Viber account on a platform which supports Public Accounts/ bots (iOS/Android). This account will automatically be set as the account administrator during the account creation process.
 1. Active Public Account/bot - Create an account [here](https://partners.viber.com/account/create-bot-account).
 1. Account authentication token - unique account identifier used to validate your account in all API requests. Once your account is created your authentication token will appear in the account’s “edit info” screen (for admins only). Each request posted to Viber by the account will need to contain the token.
