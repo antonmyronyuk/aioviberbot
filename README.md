@@ -8,7 +8,7 @@ The library is available on [GitHub](https://github.com/antonmyronyuk/aioviberbo
 This package can be imported using pip by adding the following to your `requirements.txt`:
 
 ```python
-aioviberbot==0.2.0
+aioviberbot==0.2.1
 ```
 
 ## License
