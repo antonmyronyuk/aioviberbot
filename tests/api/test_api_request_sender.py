@@ -1,9 +1,9 @@
 import json
 import logging
+from unittest.mock import patch
 
 import aiohttp
 import pytest
-from asynctest.mock import patch
 
 from aioviberbot.api.api_request_sender import ApiRequestSender
 from aioviberbot.api.bot_configuration import BotConfiguration
