@@ -42,6 +42,34 @@ async def test_send_message_sanity():
     assert token == message_token
 
 
+async def test_broadcast_message_sanity():
+    broadcast_list = [
+        '012345A=',
+        '012345B=',
+        '012345C=',
+    ]
+    text = 'hi!'
+    message_token = 'a token'
+
+    async def post_request(endpoint, payload):
+        assert endpoint == BOT_API_ENDPOINT.BROADCAST_MESSAGE
+        assert payload['broadcast_list'] == broadcast_list
+        assert payload['sender']['name'] == VIBER_BOT_CONFIGURATION.name
+        assert payload['sender']['avatar'] == VIBER_BOT_CONFIGURATION.avatar
+        assert payload['text'] == text
+        return dict(status=0, message_token=message_token)
+
+    request_sender = Mock()
+    request_sender.post_request = post_request
+
+    text_message = TextMessage(text=text)
+
+    message_sender = MessageSender(logger, request_sender)
+    token = await message_sender.broadcast_message(
+        broadcast_list, VIBER_BOT_CONFIGURATION.name, VIBER_BOT_CONFIGURATION.avatar, text_message)
+    assert token == message_token
+
+
 async def test_post_to_public_account_sanity():
     sender = '012345A='
     text = 'hi!'
@@ -82,6 +110,29 @@ async def test_message_invalid():
         await message_sender.send_message(to, VIBER_BOT_CONFIGURATION.name, VIBER_BOT_CONFIGURATION.avatar, text_message)
 
     assert str(exc_info.value).startswith('failed validating message:')
+
+
+@pytest.mark.parametrize('broadcast_list,error', [
+    ('not a list', 'broadcast list should contain list of receiver ids'),
+    ([], 'broadcast list should not be empty'),
+    (['012345A='] * 500, 'broadcast list max length is 300'),
+])
+async def test_brodcast_list_invalid(broadcast_list, error):
+    text = 'hi!'
+
+    async def post_request(endpoint, payload):
+        pytest.fail('message sender not supposed to call post_request')
+
+    request_sender = Mock()
+    request_sender.post_request = post_request
+
+    text_message = TextMessage(text=text)
+
+    message_sender = MessageSender(logger, request_sender)
+    with pytest.raises(Exception) as exc_info:
+        await message_sender.broadcast_message(broadcast_list, VIBER_BOT_CONFIGURATION.name, VIBER_BOT_CONFIGURATION.avatar, text_message)
+
+    assert str(exc_info.value) == error
 
 
 async def test_send_message_failed():

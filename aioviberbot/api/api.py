@@ -81,6 +81,25 @@ class Api:
 
         return sent_messages_tokens
 
+    async def broadcast_messages(self, broadcast_list, messages):
+        """
+        :param broadcast_list: list of Viber user ids
+        :param messages: list of Message objects to be sent
+        :return: list of tokens of the sent messages
+        """
+        self._logger.debug('going to broadcast messages: {0}'.format(messages))
+        if not isinstance(messages, list):
+            messages = [messages]
+
+        sent_messages_tokens = []
+
+        for message in messages:
+            token = await self._message_sender.broadcast_message(
+                broadcast_list, self._bot_configuration.name, self._bot_configuration.avatar, message)
+            sent_messages_tokens.append(token)
+
+        return sent_messages_tokens
+
     async def post_messages_to_public_account(self, sender, messages):
         if not isinstance(messages, list):
             messages = [messages]
