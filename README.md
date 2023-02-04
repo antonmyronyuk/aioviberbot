@@ -228,6 +228,7 @@ As you can see there's a bunch of `Request` types here's a list of them.
     * [.verify\_signature(request\_data, signature)](#verify_signature) ⇒ `boolean`
     * [.parse\_request(request\_data)](#parse_request) ⇒ `ViberRequest`
     * [.send\_messages(to, messages)](#send_messages) ⇒ `list of message tokens sent`
+    * [.broadcast\_messages(broadcast\_list, messages)](#broadcast_messages) ⇒ `list of message tokens sent`
     * [.get\_online(viber\_user\_ids)](#get_online) ⇒ `dictionary of users status`
     * [.get\_user_details(viber\_user\_id)](#get_user_details) ⇒ `dictionary of user's data`
     * [.post\_messages\_to\_public\_account(to, messages)](#post_to_pa) ⇒ `list of message tokens sent`
@@ -323,6 +324,28 @@ Returns `list` of message tokens of the messages sent.
 ```python
 tokens = await viber.send_messages(
     to=viber_request.sender.id,
+    messages=[TextMessage(text='sample message')],
+)
+```
+
+<a name="broadcast_messages"></a>
+
+### Api.broadcast\_messages(broadcast_list, messages)
+
+| Param | Type   | Description               |
+| --- |--------|---------------------------|
+| broadcast_list | `list` | list of Viber user ids    |
+| messages | `list` | list of `Message` objects |
+
+Returns `list` of message tokens of the messages sent. 
+
+```python
+tokens = await viber.broadcast_messages(
+    broadcast_list=[  
+        "ABB102akPCRKFaqxWnafEIA==",
+        "ABB102akPCRKFaqxWna111==",
+        "ABB102akPCRKFaqxWnaf222==",
+    ],
     messages=[TextMessage(text='sample message')],
 )
 ```

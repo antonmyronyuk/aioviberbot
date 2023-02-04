@@ -15,7 +15,7 @@ setuptools.setup(
     packages=['aioviberbot', 'aioviberbot.api', 'aioviberbot.api.viber_requests',
               'aioviberbot.api.messages', 'aioviberbot.api.messages.data_types'],
     install_requires=['aiohttp'],
-    tests_require=['pytest', 'pytest-aiohttp'],
+    tests_require=['pytest', 'pytest-aiohttp', 'asynctest'],
     url='https://github.com/antonmyronyuk/aioviberbot',
     author='Anton Myronyuk',
     author_email='antonmyronyuk@gmail.com',

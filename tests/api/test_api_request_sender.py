@@ -1,6 +1,6 @@
 import json
 import logging
-from unittest.mock import patch
+import sys
 
 import aiohttp
 import pytest
@@ -10,6 +10,11 @@ from aioviberbot.api.bot_configuration import BotConfiguration
 from aioviberbot.api.consts import BOT_API_ENDPOINT, VIBER_BOT_USER_AGENT
 from aioviberbot.api.event_type import EventType
 from .stubs import ResponseStub
+
+if sys.version_info < (3, 8):
+    from asynctest import patch
+else:
+    from unittest.mock import patch
 
 logger = logging.getLogger('super-logger')
 VIBER_BOT_API_URL = 'http://site.com'
