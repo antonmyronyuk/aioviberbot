@@ -344,7 +344,7 @@ tokens = await viber.broadcast_messages(
     broadcast_list=[  
         "ABB102akPCRKFaqxWnafEIA==",
         "ABB102akPCRKFaqxWna111==",
-        "ABB102akPCRKFaqxWnaf222=="
+        "ABB102akPCRKFaqxWnaf222==",
     ],
     messages=[TextMessage(text='sample message')],
 )
