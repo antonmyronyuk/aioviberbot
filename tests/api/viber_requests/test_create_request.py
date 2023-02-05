@@ -20,6 +20,7 @@ def test_create_request_missing_event():
             text="HI!"
         ))
 
-    with pytest.raises(ViberValidationError) as exc:
+    with pytest.raises(ViberValidationError) as exc_info:
         create_request(sample_request)
-        assert str(exc.value).startswith("request is missing field 'event'")
+
+    assert str(exc_info.value).startswith("request is missing field 'event'")

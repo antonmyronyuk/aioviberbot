@@ -165,7 +165,7 @@ def test_video_message():
 
 
 def test_unknown_type():
-    with pytest.raises(ViberValidationError) as exc:
+    with pytest.raises(ViberValidationError) as exc_info:
         message_data = """
         {
            "auth_token": "4453b6ac1s345678-e02c5f12174805f9-daec9cbb5448c51r",
@@ -181,7 +181,8 @@ def test_unknown_type():
         """
 
         get_message(json.loads(message_data))
-        assert exc.value.message.startswith("message type 'NotExists' is not supported")
+
+    assert str(exc_info.value).startswith("message type 'NotExists' is not supported")
 
 
 def test_get_text_message_unicode():
@@ -205,7 +206,7 @@ def test_get_text_message_unicode():
 
 
 def test_get_message_missing_type():
-    with pytest.raises(ViberValidationError) as exc:
+    with pytest.raises(ViberValidationError) as exc_info:
         message_data = """
         {
            "auth_token": "4453b6ac1s345678-e02c5f12174805f9-daec9cbb5448c51r",
@@ -219,4 +220,5 @@ def test_get_message_missing_type():
         """
 
         get_message(json.loads(message_data))
-        assert exc.value.message.startswith("message data doesn't contain a type")
+
+    assert str(exc_info.value).startswith("message data doesn't contain a type")
