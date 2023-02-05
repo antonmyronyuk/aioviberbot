@@ -4,6 +4,12 @@ import traceback
 import aiohttp
 
 from aioviberbot.api.consts import BOT_API_ENDPOINT
+from aioviberbot.api.errors import (
+    ViberClientError,
+    ViberRequestError,
+    ViberTimeoutError,
+    ViberValidationError,
+)
 
 
 class ApiRequestSender:
@@ -40,12 +46,18 @@ class ApiRequestSender:
             )
             response.raise_for_status()
             result = await response.json()
-        except (aiohttp.ClientError, asyncio.TimeoutError):
+        except aiohttp.ClientError as e:
             self._logger.error(
-                'failed to post request to endpoint={0}, with payload={1}. error is: {2}'
+                'client error on post request to endpoint={0}, with payload={1}. error is: {2}'
                 .format(endpoint, payload, traceback.format_exc()),
             )
-            raise
+            raise ViberClientError(e)
+        except asyncio.TimeoutError as e:
+            self._logger.error(
+                'timeout error on post request to endpoint={0}, with payload={1}. error is: {2}'
+                .format(endpoint, payload, traceback.format_exc()),
+            )
+            raise ViberTimeoutError(e)
         except Exception:
             self._logger.error(
                 'unexpected Exception while trying to post request. error is: {0}'
@@ -56,7 +68,7 @@ class ApiRequestSender:
             if result['status'] == 0:
                 return result
 
-            raise Exception(
+            raise ViberRequestError(
                 'failed with status: {0}, message: {1}'
                 .format(result['status'], result.get('status_message')),
             )
@@ -86,7 +98,7 @@ class ApiRequestSender:
 
     async def get_online_status(self, ids):
         if ids is None or not isinstance(ids, list) or len(ids) == 0:
-            raise Exception('missing parameter ids, should be a list of viber memberIds')
+            raise ViberValidationError('missing parameter ids, should be a list of viber memberIds')
 
         payload = {
             'ids': ids,
@@ -99,7 +111,7 @@ class ApiRequestSender:
 
     async def get_user_details(self, user_id):
         if user_id is None:
-            raise Exception('missing parameter id')
+            raise ViberValidationError('missing parameter id')
 
         payload = {
             'id': user_id,

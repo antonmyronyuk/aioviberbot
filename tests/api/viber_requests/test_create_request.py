@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pytest
+from aioviberbot.api.errors import ViberValidationError
 from aioviberbot.api.messages import MessageType
 from aioviberbot.api.viber_requests import create_request
 
@@ -19,6 +20,7 @@ def test_create_request_missing_event():
             text="HI!"
         ))
 
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ViberValidationError) as exc_info:
         create_request(sample_request)
-        assert exc.value.message.startswith("request is missing field 'event'")
+
+    assert str(exc_info.value).startswith("request is missing field 'event'")

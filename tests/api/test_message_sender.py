@@ -5,6 +5,7 @@ import pytest
 
 from aioviberbot.api.bot_configuration import BotConfiguration
 from aioviberbot.api.consts import BOT_API_ENDPOINT
+from aioviberbot.api.errors import ViberRequestError, ViberValidationError
 from aioviberbot.api.message_sender import MessageSender
 from aioviberbot.api.messages import TextMessage
 
@@ -106,7 +107,7 @@ async def test_message_invalid():
     text_message = TextMessage(text=None)
 
     message_sender = MessageSender(logger, request_sender)
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(ViberValidationError) as exc_info:
         await message_sender.send_message(to, VIBER_BOT_CONFIGURATION.name, VIBER_BOT_CONFIGURATION.avatar, text_message)
 
     assert str(exc_info.value).startswith('failed validating message:')
@@ -129,7 +130,7 @@ async def test_brodcast_list_invalid(broadcast_list, error):
     text_message = TextMessage(text=text)
 
     message_sender = MessageSender(logger, request_sender)
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(ViberValidationError) as exc_info:
         await message_sender.broadcast_message(broadcast_list, VIBER_BOT_CONFIGURATION.name, VIBER_BOT_CONFIGURATION.avatar, text_message)
 
     assert str(exc_info.value) == error
@@ -140,7 +141,7 @@ async def test_send_message_failed():
     text = 'hi!'
 
     async def post_request(endpoint, payload):
-        raise Exception('failed with status: 1, message: failed')
+        raise ViberRequestError('failed with status: 1, message: failed')
 
     request_sender = Mock()
     request_sender.post_request = post_request
@@ -148,7 +149,7 @@ async def test_send_message_failed():
     text_message = TextMessage(text=text)
 
     message_sender = MessageSender(logger, request_sender)
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(ViberRequestError) as exc_info:
         await message_sender.send_message(to, VIBER_BOT_CONFIGURATION.name, VIBER_BOT_CONFIGURATION.avatar, text_message)
 
     assert str(exc_info.value) == 'failed with status: 1, message: failed'
@@ -159,7 +160,7 @@ async def test_post_message_to_public_account_failed():
     text = 'hi!'
 
     async def post_request(endpoint, payload):
-        raise Exception('failed with status: 1, message: failed')
+        raise ViberRequestError('failed with status: 1, message: failed')
 
     request_sender = Mock()
     request_sender.post_request = post_request
@@ -167,7 +168,7 @@ async def test_post_message_to_public_account_failed():
     text_message = TextMessage(text=text)
 
     message_sender = MessageSender(logger, request_sender)
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(ViberRequestError) as exc_info:
         await message_sender.post_to_public_account(
             sender, VIBER_BOT_CONFIGURATION.name, VIBER_BOT_CONFIGURATION.avatar, text_message)
 

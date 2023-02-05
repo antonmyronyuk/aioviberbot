@@ -8,6 +8,7 @@ import pytest
 from aioviberbot.api.api_request_sender import ApiRequestSender
 from aioviberbot.api.bot_configuration import BotConfiguration
 from aioviberbot.api.consts import BOT_API_ENDPOINT, VIBER_BOT_USER_AGENT
+from aioviberbot.api.errors import ViberRequestError, ViberValidationError
 from aioviberbot.api.event_type import EventType
 from .stubs import ResponseStub
 
@@ -47,11 +48,11 @@ async def test_set_webhook_failure():
     url = 'http://sample.url.com'
 
     async def post_request(endpoint, payload):
-        raise Exception('failed with status: 1, message: failed')
+        raise ViberRequestError('failed with status: 1, message: failed')
 
     request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
     request_sender.post_request = post_request
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(ViberRequestError) as exc_info:
         await request_sender.set_webhook(url=url, webhook_events=webhook_events)
 
     assert str(exc_info.value) == 'failed with status: 1, message: failed'
@@ -123,10 +124,8 @@ async def test_post_request_json_exception(monkeypatch):
     monkeypatch.setattr('aiohttp.ClientSession.post', callback)
     request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
 
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(json.JSONDecodeError):
         await request_sender.get_account_info()
-
-    assert issubclass(exc_info.type, json.JSONDecodeError)
 
 
 async def test_get_online_status_fail(monkeypatch):
@@ -145,7 +144,7 @@ async def test_get_online_status_fail(monkeypatch):
     monkeypatch.setattr('aiohttp.ClientSession.post', callback)
     request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
 
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(ViberRequestError) as exc_info:
         await request_sender.get_online_status(ids=user_ids)
 
     assert str(exc_info.value) == 'failed with status: 1, message: failed'
@@ -158,7 +157,7 @@ async def test_get_online_missing_ids(monkeypatch):
     monkeypatch.setattr('aiohttp.ClientSession.post', callback)
     request_sender = ApiRequestSender(logger, VIBER_BOT_API_URL, VIBER_BOT_CONFIGURATION, VIBER_BOT_USER_AGENT)
 
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(ViberValidationError) as exc_info:
         await request_sender.get_online_status(ids=None)
 
     assert str(exc_info.value) == 'missing parameter ids, should be a list of viber memberIds'
