@@ -1,4 +1,5 @@
 from aioviberbot.api.consts import BOT_API_ENDPOINT, BROADCAST_LIST_MAX_LENGTH
+from aioviberbot.api.errors import ViberValidationError
 
 
 class MessageSender:
@@ -9,7 +10,7 @@ class MessageSender:
     async def send_message(self, to, sender_name, sender_avatar, message, chat_id=None):
         if not message.validate():
             self._logger.error('failed validating message: {0}'.format(message))
-            raise Exception('failed validating message: {0}'.format(message))
+            raise ViberValidationError('failed validating message: {0}'.format(message))
 
         payload = self._prepare_payload(
             message=message,
@@ -29,16 +30,18 @@ class MessageSender:
     async def broadcast_message(self, broadcast_list, sender_name, sender_avatar, message):
         if not message.validate():
             self._logger.error('failed validating message: {0}'.format(message))
-            raise Exception('failed validating message: {0}'.format(message))
+            raise ViberValidationError('failed validating message: {0}'.format(message))
 
         if not isinstance(broadcast_list, (list, tuple)):
-            raise Exception('broadcast list should contain list of receiver ids')
+            raise ViberValidationError('broadcast list should contain list of receiver ids')
 
         if not broadcast_list:
-            raise Exception('broadcast list should not be empty')
+            raise ViberValidationError('broadcast list should not be empty')
 
         if len(broadcast_list) > BROADCAST_LIST_MAX_LENGTH:
-            raise Exception('broadcast list max length is {0}'.format(BROADCAST_LIST_MAX_LENGTH))
+            raise ViberValidationError(
+                'broadcast list max length is {0}'.format(BROADCAST_LIST_MAX_LENGTH),
+            )
 
         payload = self._prepare_payload(
             message=message,
@@ -57,10 +60,10 @@ class MessageSender:
     async def post_to_public_account(self, sender, sender_name, sender_avatar, message):
         if not message.validate():
             self._logger.error('failed validating message: {0}'.format(message))
-            raise Exception('failed validating message: {0}'.format(message))
+            raise ViberValidationError('failed validating message: {0}'.format(message))
 
         if sender is None:
-            raise Exception('missing parameter sender')
+            raise ViberValidationError('missing parameter sender')
 
         payload = self._prepare_payload(
             message=message,

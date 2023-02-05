@@ -3,6 +3,7 @@ import json
 
 import pytest
 
+from aioviberbot.api.errors import ViberValidationError
 from aioviberbot.api.messages import ContactMessage
 from aioviberbot.api.messages import FileMessage
 from aioviberbot.api.messages import LocationMessage
@@ -164,7 +165,7 @@ def test_video_message():
 
 
 def test_unknown_type():
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ViberValidationError) as exc:
         message_data = """
         {
            "auth_token": "4453b6ac1s345678-e02c5f12174805f9-daec9cbb5448c51r",
@@ -204,7 +205,7 @@ def test_get_text_message_unicode():
 
 
 def test_get_message_missing_type():
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ViberValidationError) as exc:
         message_data = """
         {
            "auth_token": "4453b6ac1s345678-e02c5f12174805f9-daec9cbb5448c51r",
