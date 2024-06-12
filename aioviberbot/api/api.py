@@ -30,9 +30,9 @@ class Api:
     def avatar(self):
         return self._bot_configuration.avatar
 
-    async def set_webhook(self, url, webhook_events=None, is_inline=False):
+    async def set_webhook(self, url, webhook_events=None, is_inline=False, send_name=True, send_photo=True):
         self._logger.debug('setting webhook to url: {0}'.format(url))
-        return await self._request_sender.set_webhook(url, webhook_events, is_inline)
+        return await self._request_sender.set_webhook(url, webhook_events, is_inline, send_name, send_photo)
 
     async def unset_webhook(self):
         self._logger.debug('unsetting webhook')
