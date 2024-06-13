@@ -42,7 +42,7 @@ async def webhook(request: web.Request) -> web.Response:
 
 
 async def set_webhook_signal(app: web.Application):
-    await viber.set_webhook('https://mybotwebserver.com/webhhok')
+    await viber.set_webhook('https://mybotwebserver.com/webhook')
 
 
 if __name__ == '__main__':

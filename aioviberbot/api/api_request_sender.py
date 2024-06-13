@@ -76,10 +76,12 @@ class ApiRequestSender:
             if not self._client_session:
                 await session.close()
 
-    async def set_webhook(self, url, webhook_events=None, is_inline=False):
+    async def set_webhook(self, url, webhook_events=None, is_inline=False, send_name=True, send_photo=True):
         payload = {
             'url': url,
             'is_inline': is_inline,
+            'send_name': send_name,
+            'send_photo': send_photo,
         }
 
         if webhook_events is not None:

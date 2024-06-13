@@ -202,7 +202,7 @@ async def webhook(request: web.Request) -> web.Response:
 
 
 async def set_webhook_signal(app: web.Application):
-    await viber.set_webhook('https://mybotwebserver.com/webhhok')
+    await viber.set_webhook('https://mybotwebserver.com/webhook')
 
 
 if __name__ == '__main__':
@@ -250,6 +250,8 @@ As you can see there's a bunch of `Request` types here's a list of them.
 | --- | --- | --- |
 | url | `string` | Your web server url |
 | webhook\_events | `list` | optional list of subscribed events |
+| send\_name | `bool` | optional should receive the user name |
+| send\_photo | `bool` | optional should receive the user photo |
 
 Returns `List of registered event_types`. 
 
