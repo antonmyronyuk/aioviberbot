@@ -12,9 +12,9 @@ class ViberFailedRequest(ViberRequest):
 
     def from_dict(self, request_dict):
         super(ViberFailedRequest, self).from_dict(request_dict)
-        self._message_token = request_dict['message_token']
-        self._user_id = request_dict['user_id']
-        self._desc = request_dict['desc']
+        self._message_token = request_dict.get('message_token')
+        self._user_id = request_dict.get('user_id')
+        self._desc = request_dict.get('desc')
         return self
 
     @property
